@@ -1,0 +1,294 @@
+.paymentProcessing {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 0;
+
+	.paymentProcessing-text {
+		width: 100%;
+		text-align: center;
+		transition: all 0.6s ease-out;
+		margin-top: 10px;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	.flip-container {
+		position: relative;
+		transform: scale(0.6);
+		margin-bottom: 20px;
+
+		&:after {
+			content: '';
+			background: transparentize(#ccc, 0.8);
+			display: block;
+			width: 250px;
+			height: 250px;
+			top: 50%;
+			left: 50%;
+			position: absolute;
+			transform: translateZ(-100px) translateX(-50%) translateY(-50%);
+			border-radius: 50%;
+		}
+
+		.checkCircle {
+			width: 250px;
+			height: 250px;
+			top: 50%;
+			left: 50%;
+			position: absolute;
+			transform: translateZ(-100px) translateX(-50%) translateY(-50%);
+
+			.circle {
+				stroke-dasharray: 1000;
+				stroke-dashoffset: 1000;
+			}
+
+			&:before {
+				width: 0;
+				height: 10px;
+				top: 50%;
+				left: 50%;
+				position: absolute;
+				background-color: #66bc46;
+				display: block;
+				content: '';
+				transform: translate(-58px, 37px) rotate(36deg);
+				opacity: 0;
+				transition: opacity 0.6s ease-out;
+			}
+
+			&:after {
+				width: 0;
+				height: 10px;
+				top: 50%;
+				left: 50%;
+				position: absolute;
+				background-color: #66bc46;
+				display: block;
+				content: '';
+				transform: translate(-39px, 3px) rotate(-51deg);
+				opacity: 0;
+				transition: opacity 0.6s ease-out;
+			}
+		}
+	}
+
+	.scanline {
+		height: 120%;
+		width: 6px;
+		border-radius: 4px;
+		border: 1px solid #29eae2;
+		z-index: 10;
+		position: absolute;
+		background-color: #fff;
+		top: -10%;
+		transform: translateX(-15px);
+		opacity: 0;
+		box-shadow: 0px 0px 10px transparentize(#29eae2, 0.2), 0px 0px 20px transparentize(#29eae2, 0.5);
+		animation: scanline 4s ease-in-out infinite;
+	}
+
+	.scanOverlay {
+		background-color: transparentize(#29eae2, 0.7);
+		width: 100%;
+		height: 110px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1000;
+		overflow: hidden;
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+		animation: scan 4s ease-in-out infinite;
+
+		table {
+			pointer-events: none;
+			width: 160px;
+			height: 110px;
+			tr td {
+				border: 1px solid transparentize(#fff, 0.8);
+			}
+		}
+	}
+
+	.creditcard {
+		position: absolute;
+		.front {
+		}
+
+		.back {
+		}
+	}
+
+	&.done {
+		.flip-container {
+			.scanline,
+			.scanOverlay,
+			&:after,
+			.creditcard .front,
+			.creditcard .back {
+				display: none;
+			}
+
+			.checkCircle {
+				&:before {
+					width: 50px;
+					transform: translate(-58px, 37px) rotate(36deg);
+					opacity: 1;
+				}
+
+				&:after {
+					width: 120px;
+					transform: translate(-39px, 3px) rotate(-51deg);
+					opacity: 1;
+				}
+
+				.circle {
+					animation: circleOutline 1.5s ease-in-out forwards;
+				}
+			}
+		}
+		.paymentProcessing-text {
+			opacity: 0;
+		}
+	}
+}
+
+/* entire container, keeps perspective */
+.flip-container {
+	perspective: 500px;
+	transform-style: preserve-3d;
+}
+
+.flip-container,
+.front,
+.back {
+	width: 160px;
+	height: 110px;
+}
+
+/* flip speed goes here */
+.flipper {
+	transition: all 0.6s;
+	transform-style: preserve-3d;
+	position: relative;
+	width: 160px;
+	height: 110px;
+	animation: flip 8s ease-in-out infinite;
+	opacity: 1;
+}
+
+/* hide back of pane during swap */
+.front,
+.back {
+	backface-visibility: hidden;
+	transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/*  UPDATED! front pane, placed above back */
+.front {
+	z-index: 2;
+	transform: rotateY(0deg);
+}
+
+/* back, initially hidden pane */
+.back {
+	transform: rotateY(-180deg);
+}
+
+/* 
+    Some vertical flip updates 
+*/
+.vertical.flip-container {
+	position: relative;
+}
+
+.vertical .back {
+	transform: rotateX(180deg);
+}
+
+.vertical.flip-container:hover .back {
+	transform: rotateX(0deg);
+}
+
+.vertical.flip-container:hover .front {
+	transform: rotateX(180deg);
+}
+
+@keyframes scan {
+	0% {
+		width: 0;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		opacity: 1;
+	}
+	25% {
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+		width: 100%;
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes scanline {
+	0% {
+		transform: translateX(-15px);
+		opacity: 0;
+	}
+	5% {
+		opacity: 1;
+	}
+	20% {
+		opacity: 1;
+	}
+	25% {
+		transform: translate(170px);
+		opacity: 0;
+	}
+}
+
+@keyframes flip {
+	0% {
+		transform: rotateY(0deg);
+	}
+	30% {
+		transform: rotateY(0deg);
+	}
+	50% {
+		transform: rotateY(180deg);
+	}
+	80% {
+		transform: rotateY(180deg);
+	}
+	100% {
+		transform: rotateY(360deg);
+	}
+}
+
+@keyframes circleOutline {
+	0% {
+		stroke-dasharray: 1000;
+		stroke-dashoffset: 1000;
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		stroke-dashoffset: 0;
+		opacity: 1;
+	}
+}

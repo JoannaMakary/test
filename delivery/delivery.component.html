@@ -1,0 +1,141 @@
+<div id="delivery-step" class="checkout-step" [ngClass]="{ pickup: !checkout.isDelivery(), delivery: checkout.isDelivery() }">
+	<h2 class="step-heading" *ngIf="checkout.isDelivery()">Delivery Date</h2>
+	<h2 class="step-heading" *ngIf="!checkout.isDelivery()">Pickup Date</h2>
+
+	<div class="checkout-sub-content">
+		<div class="calendar-notice" *ngIf="checkout.timedOutDates">
+			<mat-icon>info</mat-icon>
+			<div>The shipping dates you have chosen are no longer valid. Please select new shipping dates and try again.</div>
+		</div>
+
+		<div class="calendar-notice" *ngIf="checkout.noShippingOptions.length">
+			<mat-icon>info</mat-icon>
+			<div>There are no available shipping options for the address you provided ({{ checkout.noShippingOptions.toString() }}). Please select an alternative shipping location.</div>
+		</div>
+
+		<div class="info" *ngIf="!checkout.isDelivery()">
+			Please select a date you would like to pick up your gift(s) at
+			<strong>{{ checkout.misc.value.pickup_store.address1 }} ({{ checkout.misc.value.pickup_store.firstName }} {{ checkout.misc.value.pickup_store.lastName }})</strong>
+		</div>
+
+		<!-- Shipping Option Selector + Calendar Selector for each Consignment -->
+		<div class="consignments" *ngIf="checkout.forms.consignmentsDatesOptions.length">
+			<div class="consignment-container" *ngFor="let consignDateOption of checkout.forms.consignmentsDatesOptions">
+				<div class="info" *ngIf="checkout.isDelivery()">Please select a date you would like your gift(s) delivered. Most shipments are delivered Monday to Friday between 9am and 5pm.</div>
+
+				<form [formGroup]="consignDateOption" class="consignment">
+					<div class="shipping-options" *ngIf="checkout.isDelivery()" hidden>
+						<h3 class="heading">Select a shipping option</h3>
+						<mat-radio-group formControlName="shipping_option" color="primary" *ngIf="consignDateOption.all_options">
+							<div class="method" *ngFor="let method of consignDateOption.all_options">
+								<mat-radio-button [value]="method" [checked]="isSelectedMethod(method, consignDateOption)" (click)="calendar.checkSelectedDate(consignDateOption)">
+									{{ method.description }} - <strong>${{ method.cost % 1 === 0 ? method.cost : (method.cost | number : '1.2-2') }}</strong
+									><span *ngIf="method.delivery_range"> - Arrives {{ method.delivery_range }}</span>
+								</mat-radio-button>
+							</div>
+						</mat-radio-group>
+					</div>
+
+					<div class="group">
+						<div class="left">
+							<div class="calendar" [ngClass]="{ pickup: !checkout.isDelivery(), delivery: checkout.isDelivery(), ups: !calendar.isLocalDelivery(consignDateOption) }">
+								<p-calendar
+									[id]="'calendar-' + consignDateOption.consignment_id"
+									locale="en"
+									formControlName="delivery_date"
+									[inline]="true"
+									[readonlyInput]="true"
+									[selectOtherMonths]="true"
+									[minDate]="consignDateOption.minDate ? consignDateOption.minDate : calendar.minDate"
+									[maxDate]="calendar.maxDate"
+									[disabledDates]="consignDateOption?.value?.shipping_option?.description?.toLowerCase().includes('ups') ? calendar.blackoutUPS : calendar.blackoutLocal"
+									(onSelect)="calendar.checkSelectedDate(consignDateOption)"
+								>
+									<ng-template pTemplate="date" let-date>
+										<div
+											[ngClass]="{
+												'ups-highlight': checkout.isDelivery() && (calendar.isInStandardRange(date, consignDateOption) || calendar.isInExpressRange(date, consignDateOption)),
+												'next-day-highlight': checkout.isDelivery() && calendar.isNextDay(date, consignDateOption),
+												'express-highlight': calendar.isInExpressRange(date, consignDateOption)
+											}"
+										>
+											<span class="day">{{ date.day }}</span>
+											<!-- <span *ngIf="checkout.isDelivery() && calendar.isInStandardRange(date, consignDateOption)" class="calendar-price"
+												>${{ calendar.getConsignmentPrice(consignDateOption, 'standard') }}</span
+											>
+											<span *ngIf="checkout.isDelivery() && calendar.isInExpressRange(date, consignDateOption)" class="calendar-price"
+												>${{ calendar.getConsignmentPrice(consignDateOption, 'express') }}</span
+											> -->
+											<span *ngIf="checkout.isDelivery() && calendar.getConsignmentPrice(consignDateOption, null, date)" class="calendar-price">
+												${{ calendar.getConsignmentPrice(consignDateOption, null, date) }}
+											</span>
+										</div>
+									</ng-template>
+								</p-calendar>
+							</div>
+							<div class="calendar-legend" *ngIf="checkout.isDelivery()">
+								<span class="legend-icon arrival">ARRIVE</span>
+								<span class="legend-description" *ngIf="!calendar.isLocalDelivery(consignDateOption)"
+									>The expected arrival date is the first highlighted date, but it may arrive the following day.</span
+								>
+								<span class="legend-description" *ngIf="calendar.isLocalDelivery(consignDateOption)">Estimated arrival date</span>
+							</div>
+							<div class="calendar-notice" *ngIf="checkout.isDelivery() && !calendar.isLocalDelivery(consignDateOption)">
+								<mat-icon>info</mat-icon>
+								<div>
+									Delivery dates outside of the GTA are based on carriers' schedules and are not guaranteed. If your gift is intended for a specific date, we recommend selecting an
+									earlier target delivery date.
+								</div>
+							</div>
+							<div class="calendar-notice" *ngIf="checkout.isDelivery() && calendar.isLocalDelivery(consignDateOption)">
+								<mat-icon>info</mat-icon>
+								<div>Deliveries within the Greater Toronto Area occur between 9am-5pm, Monday to Friday.</div>
+							</div>
+						</div>
+
+						<div class="right">
+							<div class="shipping-address">
+								<h4 *ngIf="checkout.isDelivery()" class="heading">Delivery Information</h4>
+								<h4 *ngIf="!checkout.isDelivery()" class="heading">Pickup Information</h4>
+								<p>{{ consignDateOption.address.firstName }} {{ consignDateOption.address.lastName }}</p>
+								<p>{{ consignDateOption.address.address1 }}</p>
+								<p *ngIf="consignDateOption.address.address2">{{ consignDateOption.address.address2 }}</p>
+								<p>{{ consignDateOption.address.city }}, {{ consignDateOption.address.stateOrProvince }}, {{ consignDateOption.address.postalCode }}</p>
+								<p>{{ consignDateOption.address.country }}</p>
+								<p>{{ consignDateOption.address.phone }}</p>
+							</div>
+							<div class="items">
+								<div class="item" *ngFor="let product of consignDateOption.products">
+									<div class="img">
+										<img
+											[src]="
+												product.imageUrl
+													? product.imageUrl
+													: product.type?.includes('giftCertificate')
+													? 'https://cdn11.bigcommerce.com/s-guasxd1cdp/stencil/7d97b060-fc44-013b-94a1-0a916f4169f9/e/3cc0f790-fe4d-013b-452c-62dfd34fb321/img/GiftCertificate.png'
+													: 'https://eckerd.org/wp-content/uploads/2022/01/image-coming-soon.jpg'
+											"
+											[alt]="product.name"
+										/>
+									</div>
+									<div class="details">
+										<div class="name">{{ product.name }}</div>
+										<p class="option" mat-line *ngFor="let option of product.options">
+											<strong>{{ option.name }}:</strong> {{ option.value }}
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="actions">
+			<button class="return-button" mat-flat-button color="primary" (click)="this.cc.stepper.previous()">Edit Address</button>
+			<button class="continue-button" mat-flat-button color="primary" (click)="proceedToSummary()" [class.disabled]="!calendar.validDeliveryOptions">View Summary</button>
+		</div>
+		<div class="error-notice" *ngIf="!calendar.validDeliveryOptions">Please enter a valid delivery date.</div>
+	</div>
+</div>

@@ -1,0 +1,167 @@
+<div id="payment-step" class="checkout-step">
+	<h2 class="step-heading">Payment</h2>
+
+	<div class="checkout-sub-content">
+		<div class="wrapper">
+			<div class="payment-gateways" [formGroup]="checkout.misc">
+				<h3 class="subtitle">Payment Details</h3>
+				<mat-radio-group formControlName="payment_method" color="primary" *ngIf="checkout.payment_methods">
+					<div *ngFor="let method of checkout.payment_methods; let last = last">
+						<div class="gateway-container form {{ method.id }}" [ngClass]="getGatewayContainerClass(method)">
+							<div class="gateway-header" (click)="selectMethod(method)" [matTooltipDisabled]="shouldDisableTooltip(method)" [matTooltip]="getTooltipText(method)">
+								<mat-radio-button [value]="method.id" [checked]="isSelectedMethod(method)">
+									{{ method.config.displayName }}
+									<p class="help-icon" *ngIf="shouldShowHelpIcon(method)">?</p>
+
+									<div class="credit-card-svgs" *ngIf="method.supportedCards.length">
+										<div class="svg-container" *ngFor="let card of method.supportedCards">
+											<payment-svgs [card]="card" [active]="creditcard?.value.ccType"></payment-svgs>
+										</div>
+									</div>
+
+									<div class="credit-card-svgs" *ngIf="method.id === 'bankdeposit'">
+										<div class="svg-container">
+											<payment-svgs card="PAYPAL" [active]="method.id"></payment-svgs>
+										</div>
+									</div>
+								</mat-radio-button>
+							</div>
+
+							<div class="credit-card-box" *ngIf="isSelectedMethod(method)" [formGroup]="creditcard">
+								<ng-container *ngIf="shouldShowCreditCardBox(method)">
+									<payment-adyen></payment-adyen>
+								</ng-container>
+							</div>
+							<mat-checkbox
+								class="saveCard u-hidden"
+								formControlName="save_cc"
+								color="primary"
+								matTooltip="Information securely vaulted for faster, easier future orders"
+								*ngIf="!checkout.customer.isGuest && shouldShowSaveCard(method)"
+							>
+								Please keep my payment card securely on file for future orders <mat-icon>help</mat-icon>
+							</mat-checkbox>
+
+							<div class="google-pay-box" *ngIf="method.id == checkout.googlePayMethod && this.checkout.misc.value?.payment_method?.id == checkout.googlePayMethod">
+								<ng-container>
+									<adyen-googlepay></adyen-googlepay>
+								</ng-container>
+							</div>
+
+							<div class="credit-card-box" *ngIf="shouldShowNewCardBox(method)" [formGroup]="creditcard">
+								<div class="new-card" *ngIf="shouldShowNewCard(method)">
+									<div class="line">
+										<mat-form-field appearance="outline" class="checkout-input cc-num payment">
+											<mat-label>Card Number</mat-label>
+											<input matInput placeholder="" formControlName="ccNumber" (input)="updateType()" [textMask]="{ mask: cc_mask }" />
+											<!-- <mat-error>{{ checkout.getErrorMessage('ccNumber', creditcard, checkout.forms) }}</mat-error> -->
+										</mat-form-field>
+									</div>
+									<div class="line">
+										<mat-form-field appearance="outline" class="checkout-input payment">
+											<mat-label>Name on Card</mat-label>
+											<input matInput placeholder="" formControlName="ccName" />
+											<!-- <mat-error>{{ checkout.getErrorMessage('ccName', creditcard, checkout.forms) }}</mat-error> -->
+										</mat-form-field>
+									</div>
+									<div class="line expiry">
+										<div class="top">
+											<span>Expiry Date:</span>
+										</div>
+										<div class="bottom">
+											<mat-form-field appearance="outline" class="checkout-input expiry-month payment">
+												<mat-label>Month</mat-label>
+												<mat-select class="checkout-select" placeholder="" formControlName="ccExpiryMonth">
+													<mat-option *ngFor="let month of months" [value]="month.number">{{ month.short }} ({{ month.number }})</mat-option>
+												</mat-select>
+												<!-- <mat-error>{{ checkout.getErrorMessage('ccExpiryMonth', creditcard, checkout.forms) }}</mat-error> -->
+											</mat-form-field>
+											<mat-form-field appearance="outline" class="checkout-input expiry-month payment">
+												<mat-label>Year</mat-label>
+												<mat-select class="checkout-select" placeholder="" formControlName="ccExpiryYear">
+													<mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+												</mat-select>
+												<!-- <mat-error>{{ checkout.getErrorMessage('ccExpiryYear', creditcard, checkout.forms) }}</mat-error> -->
+											</mat-form-field>
+											<mat-form-field appearance="outline" class="checkout-input cvv payment">
+												<mat-label>CVV</mat-label>
+												<input matInput placeholder="" formControlName="ccCvv" />
+												<!-- <mat-error>{{ checkout.getErrorMessage('ccCvv', creditcard, checkout.forms) }}</mat-error> -->
+											</mat-form-field>
+										</div>
+									</div>
+									<!-- <mat-checkbox formControlName="saveCC" color="primary" matTooltip="Information securely vaulted for faster, easier future orders" *ngIf="!checkout.customer.isGuest">
+										Please keep my payment card securely on file for future orders <mat-icon>help</mat-icon>
+									</mat-checkbox> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</mat-radio-group>
+			</div>
+
+			<checkout-billing></checkout-billing>
+		</div>
+	</div>
+
+	<div class="actions">
+		<p>Please review all the information on this page and make any necessary changes before placing your order.</p>
+		<button
+			*ngIf="!isPayPal(checkout.misc.value.payment_method) && !isGooglePay(checkout.misc.value.payment_method)"
+			mat-flat-button
+			class="place-order"
+			[class.disabled]="!isValidOrder() || !isValidBilling() || !isValidDates()"
+			(click)="placeOrder()"
+		>
+			Place Order
+		</button>
+
+		<ng-container *ngIf="isPayPal(checkout.misc.value.payment_method)">
+			<payment-adyen-paypal class="place-order-bar" [hidden]="!isValidBilling() || !isValidDates()"></payment-adyen-paypal>
+		</ng-container>
+
+		<button
+			style="background-color: black; color: white"
+			[style.display]="checkout.misc.value.payment_method.id == checkout.googlePayMethod && !initGooglePay ? 'block' : 'none'"
+			id="googlepay-button"
+			(click)="pay.googlePay()"
+			[hidden]="googleSignedIn"
+		>
+			<svg
+				height="40px"
+				aria-hidden="false"
+				role="presentation"
+				fill="#A1A1A1"
+				class="main-header__logo-image"
+				xmlns="http://www.w3.org/2000/svg"
+				width="80"
+				height="40"
+				viewBox="0 0 435.97 173.13"
+			>
+				<path
+					d="M206.2,84.58v50.75H190.1V10h42.7a38.61,38.61,0,0,1,27.65,10.85A34.88,34.88,0,0,1,272,47.3a34.72,34.72,0,0,1-11.55,26.6q-11.2,10.68-27.65,10.67H206.2Zm0-59.15V69.18h27a21.28,21.28,0,0,0,15.93-6.48,21.36,21.36,0,0,0,0-30.63,21,21,0,0,0-15.93-6.65h-27Z"
+					fill="#5f6368"
+				></path>
+				<path
+					d="M309.1,46.78q17.85,0,28.18,9.54T347.6,82.48v52.85H332.2v-11.9h-.7q-10,14.7-26.6,14.7-14.17,0-23.71-8.4a26.82,26.82,0,0,1-9.54-21q0-13.31,10.06-21.17t26.86-7.88q14.34,0,23.62,5.25V81.25A18.33,18.33,0,0,0,325.54,67,22.8,22.8,0,0,0,310,61.13q-13.49,0-21.35,11.38l-14.18-8.93Q286.17,46.78,309.1,46.78Zm-20.83,62.3a12.86,12.86,0,0,0,5.34,10.5,19.64,19.64,0,0,0,12.51,4.2,25.67,25.67,0,0,0,18.11-7.52q8-7.53,8-17.67-7.53-6-21-6-9.81,0-16.36,4.73C290.46,100.52,288.27,104.41,288.27,109.08Z"
+					fill="#5f6368"
+				></path>
+				<path d="M436,49.58,382.24,173.13H365.62l19.95-43.23L350.22,49.58h17.5l25.55,61.6h.35l24.85-61.6Z" fill="#5f6368"></path>
+				<path d="M141.14,73.64A85.79,85.79,0,0,0,139.9,59H72V86.73h38.89a33.33,33.33,0,0,1-14.38,21.88v18h23.21C133.31,114.08,141.14,95.55,141.14,73.64Z" fill="#4285f4"></path>
+				<path d="M72,144c19.43,0,35.79-6.38,47.72-17.38l-23.21-18C90.05,113,81.73,115.5,72,115.5c-18.78,0-34.72-12.66-40.42-29.72H7.67v18.55A72,72,0,0,0,72,144Z" fill="#34a853"></path>
+				<path d="M31.58,85.78a43.14,43.14,0,0,1,0-27.56V39.67H7.67a72,72,0,0,0,0,64.66Z" fill="#fbbc04"></path>
+				<path d="M72,28.5A39.09,39.09,0,0,1,99.62,39.3h0l20.55-20.55A69.18,69.18,0,0,0,72,0,72,72,0,0,0,7.67,39.67L31.58,58.22C37.28,41.16,53.22,28.5,72,28.5Z" fill="#ea4335"></path>
+			</svg>
+			Sign In
+		</button>
+
+		<div [hidden]="!initGooglePay || !isValidBilling() || !isValidDates()">
+			<button mat-flat-button class="place-order" [disabled]="checkout.signOutGoogle || checkout.loading == true || !isValidBilling() || !isValidDates()" (click)="pay.placeGooglePayOrder()">
+				Place (G) Order
+			</button>
+		</div>
+		<div *ngIf="initGooglePay" class="google-notice">Please ensure your Billing Address matches the Billing Address on your Google Pay account.</div>
+
+		<div class="billing-notice" *ngIf="!isValidBilling() && checkout.misc.value.payment_method.id !== checkout.googlePayMethod">Please enter a valid billing address to place your order.</div>
+	</div>
+</div>

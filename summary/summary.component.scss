@@ -1,0 +1,284 @@
+@import '../../../app.component.scss';
+
+#summary-step {
+	padding-top: 30px;
+
+	.step-heading {
+		margin: 0 0 1.5rem;
+	}
+
+	.items {
+		p {
+			font-size: 14px;
+		}
+		.mat-list {
+			border-top: 1px solid $offWhite;
+			padding: 0;
+			::ng-deep {
+				.mat-list-item {
+					height: 100%;
+					border-left: 1px solid $offWhite;
+					border-right: 1px solid $offWhite;
+					border-bottom: 1px solid $offWhite;
+					padding: 15px;
+					margin: 0;
+					@media (max-width: calc($desktop - 1px)) {
+						padding: 10px;
+					}
+					.mat-line {
+						white-space: break-spaces;
+						text-overflow: unset;
+					}
+					&.heading {
+						padding: 10px 15px;
+						background-color: $offWhite;
+						div {
+							font-weight: bold !important;
+							font-size: 16px !important;
+						}
+						@media (max-width: calc($desktop - 1px)) {
+							display: none;
+						}
+					}
+					.mat-list-item-content {
+						padding: 0;
+						align-items: flex-start;
+						column-gap: 25px;
+						row-gap: 15px;
+
+						.img-container {
+							width: 15%;
+							max-width: 100px;
+							@media (min-width: $desktop) {
+								max-width: 125px;
+							}
+							img {
+								width: 100%;
+								height: 100%;
+								max-height: 100px;
+								@media (min-width: $desktop) {
+									max-height: 125px;
+								}
+							}
+						}
+						h3 {
+							font-size: 16px !important;
+							font-weight: 500;
+							color: $black;
+							margin: 10px 0 0;
+							white-space: pre-wrap;
+							@media (max-width: calc($desktop - 1px)) {
+								margin-bottom: 10px !important;
+							}
+						}
+						p {
+							margin: 0;
+						}
+						div {
+							&.details {
+								width: 30%;
+								.mat-line {
+									overflow-wrap: break-word;
+									white-space: break-spaces;
+									font-size: 14px;
+									margin: 5px 0;
+									&:first-of-type {
+										margin-top: 0;
+									}
+								}
+							}
+							&.shipping {
+								width: 23%;
+								font-size: 14px;
+								line-height: 24px;
+							}
+							&.date {
+								width: 23%;
+								font-size: 14px;
+								line-height: 24px;
+								.mat-line {
+									white-space: break-spaces;
+									overflow: visible;
+									margin: 0 0 10px;
+								}
+							}
+							&.price {
+								width: 8%;
+								text-align: right;
+							}
+						}
+
+						@media (max-width: calc($desktop - 1px)) {
+							flex-wrap: wrap;
+							div.img-container {
+								width: 33%;
+							}
+							div.details {
+								width: 60%;
+							}
+							div.shipping,
+							div.date,
+							div.price {
+								width: 100%;
+								text-align: left;
+								@media (max-width: calc($desktop - 1px)) {
+									display: flex;
+									width: 100%;
+									gap: 20px;
+									.left {
+										width: 33%;
+										font-weight: 600;
+										font-size: 14px;
+										color: black;
+									}
+									.right {
+										width: 67%;
+									}
+								}
+							}
+						}
+						@media (min-width: $desktop) {
+							.shipping .left,
+							.date .left,
+							.price .left {
+								display: none !important;
+							}
+						}
+					}
+					.calendar-notice {
+						margin: 10px 0 0;
+						background-color: #fff9ea;
+						border: 1px solid #ffc12e;
+						display: flex;
+						font-size: 12px;
+						line-height: 18px;
+						gap: 10px;
+						font-family: 'Heebo';
+						padding: 5px 10px 5px 5px;
+						.mat-icon {
+							width: 22px;
+							color: #ffc12e;
+							font-size: 20px;
+						}
+						div {
+							width: 100%;
+						}
+					}
+					&.buildProduct {
+						border-top: none;
+						border-bottom: none;
+						&.Box {
+							border-top: 1px solid $offWhite;
+						}
+						&:last-of-type {
+							border-bottom: 1px solid $offWhite;
+						}
+						&:not(.Box) {
+							.shipping,
+							.date,
+							.price {
+								opacity: 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.totals {
+		display: flex;
+		margin: 30px 0;
+		@media (max-width: calc($desktop - 1px)) {
+			margin: 0 0 20px 0;
+			flex-wrap: wrap;
+			gap: 25px;
+			.note {
+				width: 100%;
+			}
+			.subtotals {
+				width: 100%;
+			}
+		}
+		gap: 50px;
+		@media (min-width: $lg) {
+			gap: 100px;
+		}
+		.note {
+			@media (max-width: calc($desktop - 1px)) {
+				font-size: 14px;
+			}
+			@media (min-width: $desktop) {
+				width: 60%;
+			}
+		}
+		.subtotals {
+			@media (min-width: $desktop) {
+				width: 35%;
+			}
+			.line {
+				display: flex;
+				justify-content: space-between;
+				padding: 2px 0;
+				font-size: 17px;
+				line-height: 28px;
+				&.grand-total {
+					font-weight: 600;
+					span {
+						font-weight: 600;
+					}
+				}
+				&.store-credit-apply {
+					margin-top: 2rem;
+					::ng-deep {
+						span {
+							font-size: 15px;
+						}
+					}
+				}
+			}
+			.mat-divider {
+				margin: 5px 0;
+			}
+		}
+	}
+
+	.actions {
+		display: flex;
+		place-content: space-between;
+		margin: 3rem 0 0 0;
+		.continue-button,
+		.return-button {
+			font-size: 16px;
+			height: 50px;
+			line-height: 50px;
+			padding: 0 25px;
+
+			@media (min-width: 370px) and (max-width: calc($desktop - 1px)) {
+				padding: 0 15px;
+				font-size: 15px;
+			}
+
+			@media (max-width: calc($desktop - 1px)) {
+				padding: 0 10px;
+			}
+		}
+
+		.return-button {
+			background-color: transparent;
+			color: $black;
+			&:hover {
+				background-color: $black;
+				color: $white;
+			}
+		}
+	}
+
+	::ng-deep {
+		span,
+		p,
+		div {
+			font-family: 'Heebo';
+		}
+	}
+}

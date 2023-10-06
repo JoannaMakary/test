@@ -1,0 +1,364 @@
+<div class="checkout-address">
+	<!-- Customer Addresses -->
+	<div class="customer" *ngIf="shouldShowCustomerAddresses()">
+		<mat-radio-group
+			[(ngModel)]="lineItemForm ? lineItemForm : checkout.globalItemForm"
+			class="choose-address"
+			[ngClass]="{ expanded: isExpandedAddress() || checkout.newAddress || isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm) }"
+		>
+			<!-- New Address -->
+			<div class="address-div new">
+				<div
+					class="address-header"
+					(click)="
+						checkout.newAddress = true; toggleAddressForm(lineItemForm ? lineItemForm : checkout.globalItemForm, true); resetForm(lineItemForm ? lineItemForm : checkout.globalItemForm)
+					"
+				>
+					<mat-radio-button
+						class="address-radio-button"
+						value=""
+						[class.expanded]="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)"
+						[class.checked]="lineItemForm ? lineItemForm.showNewAddressForm : checkout.globalItemForm.showNewAddressForm"
+					>
+						<div class="content">
+							<span>New {{ getAddressType() }} address</span>
+						</div>
+					</mat-radio-button>
+				</div>
+			</div>
+			<form
+				[formGroup]="lineItemForm ? lineItemForm : checkout.globalItemForm"
+				*ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)"
+				class="expanded"
+				(change)="updateAddress(lineItemForm.value, type)"
+			>
+				<div class="line">
+					<mat-form-field appearance="outline" class="checkout-input required">
+						<mat-label>First Name *</mat-label>
+						<input matInput name="firstName" formControlName="firstName" />
+						<mat-error>{{ checkout.getErrorMessage('firstName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="checkout-input required no-margin">
+						<mat-label>Last Name *</mat-label>
+						<input matInput name="lastName" formControlName="lastName" />
+						<mat-error>{{ checkout.getErrorMessage('lastName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="line">
+					<mat-form-field appearance="outline" class="checkout-input full">
+						<mat-label>Company Name</mat-label>
+						<input matInput name="company" formControlName="company" />
+						<mat-error>{{ checkout.getErrorMessage('company', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="checkout-input required no-margin">
+						<mat-label>Phone Number *</mat-label>
+						<input matInput name="phone" formControlName="phone" />
+						<mat-error>{{ checkout.getErrorMessage('phone', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="line address_check">
+					<div class="gm_results">
+						<mat-form-field appearance="outline" class="checkout-input">
+							<mat-label>Street Address * (type to autofill)</mat-label>
+							<input
+								*ngIf="type === 'shipping'"
+								matInput
+								name="address1"
+								formControlName="address1"
+								#addressInput
+								(input)="verifyAddress(addressInput.value, lineItemForm ? lineItemForm : checkout.globalItemForm)"
+							/>
+							<input
+								*ngIf="type === 'billing'"
+								matInput
+								name="address1"
+								formControlName="address1"
+								#addressInput
+								(input)="verifyAddress(addressInput.value, lineItemForm ? lineItemForm : checkout.globalItemForm)"
+							/>
+							<mat-error>{{ checkout.getErrorMessage('address1', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="checkout-input full">
+							<mat-label>Apartment, Suite, Buzzer, Etc. (Optional)</mat-label>
+							<input matInput name="address2" formControlName="address2" />
+							<mat-error>{{ checkout.getErrorMessage('address2', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="line">
+					<mat-form-field appearance="outline" class="checkout-input full required">
+						<mat-label>Country</mat-label>
+						<select matNativeControl name="country" formControlName="country" class="checkout-select" (change)="onCountryChange($event.target.value)">
+							<option *ngFor="let country of checkout.countries[type]" [value]="country.name">{{ country.name }}</option>
+						</select>
+						<mat-error>{{ checkout.getErrorMessage('country', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="checkout-input required">
+						<mat-label>Province/State</mat-label>
+						<input matInput (input)="onStateInputChange($event.target.value)" (click)="onStateInputChange('')" name="stateOrProvince" formControlName="stateOrProvince" [matAutocomplete]="auto" />
+						<mat-autocomplete #auto="matAutocomplete" panelClass="custom-autocomplete-panel">
+							<mat-option *ngFor="let state of filteredStates" [value]="state.name">
+							  {{ state.name }}
+							</mat-option>
+						  </mat-autocomplete>
+						<mat-error>{{ checkout.getErrorMessage('stateOrProvince', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="line">
+					<mat-form-field appearance="outline" class="checkout-input required no-margin">
+						<mat-label>City*</mat-label>
+						<input matInput name="city" formControlName="city" />
+						<mat-error>{{ checkout.getErrorMessage('city', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="checkout-input required">
+						<mat-label>Postal Code/Zip *</mat-label>
+						<input matInput name="postalCode" formControlName="postalCode" />
+						<mat-error>{{ checkout.getErrorMessage('postalCode', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+				</div>
+			</form>
+
+			<!-- Existing Addresses -->
+			<div
+				class="address-div"
+				*ngFor="let address of checkout.customerAddresses"
+				[class.checked]="
+					lineItemForm
+						? !lineItemForm.showNewAddressForm && lineItemForm.value.id == address.id
+						: !checkout.globalItemForm.showNewAddressForm && checkout.globalItemForm.value.id == address.id
+				"
+				[class.invalidForm]="lineItemForm ? lineItemForm.invalidForm : checkout.globalItemForm.invalidForm"
+			>
+				<div
+					class="address-header"
+					(click)="updateAddress(address, type); checkout.newAddress = false; toggleAddressForm(lineItemForm ? lineItemForm : checkout.globalItemForm, false)"
+					[class.expanded]="isAddressExpanded(address)"
+				>
+					<mat-radio-button
+						class="address-radio-button"
+						[value]="address"
+						[class.checked]="
+							lineItemForm
+								? !lineItemForm.showNewAddressForm && lineItemForm.value.id == address.id
+								: !checkout.globalItemForm.showNewAddressForm && checkout.globalItemForm.value.id == address.id
+						"
+						[checked]="
+							lineItemForm
+								? !lineItemForm.showNewAddressForm && lineItemForm.value.id == address.id
+								: !checkout.globalItemForm.showNewAddressForm && checkout.globalItemForm.value.id == address.id
+						"
+					>
+						<div class="content">
+							<span class="name">{{ address.firstName }} {{ address.lastName }}</span>
+							<p>{{ address.address1 }} {{ address.address2 }}</p>
+							<p>{{ address.city }}, {{ address.stateOrProvince }}, {{ address.postalCode }} / {{ address.country }}</p>
+							<p>{{ address.phone }}</p>
+						</div>
+						<a role="button" class="edit-address" (click)="toggleEdit(address, lineItemForm ? lineItemForm : checkout.globalItemForm)"><mat-icon>edit</mat-icon></a>
+					</mat-radio-button>
+				</div>
+
+				<!-- Edit Address Form -->
+				<form
+					[formGroup]="lineItemForm ? lineItemForm : checkout.globalItemForm"
+					*ngIf="shouldShowEditAddressForm(address, lineItemForm ? lineItemForm : checkout.globalItemForm)"
+					(input)="updateAddress(lineItemForm ? lineItemForm.value : checkout.globalItemForm.value, type)"
+				>
+					<div class="line">
+						<mat-form-field appearance="outline" class="checkout-input required">
+							<mat-label>First Name *</mat-label>
+							<input matInput name="firstName" formControlName="firstName" />
+							<mat-error>{{ checkout.getErrorMessage('firstName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="checkout-input required no-margin">
+							<mat-label>Last Name *</mat-label>
+							<input matInput name="lastName" formControlName="lastName" />
+							<mat-error>{{ checkout.getErrorMessage('lastName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="line">
+						<mat-form-field appearance="outline" class="checkout-input full">
+							<mat-label>Company Name</mat-label>
+							<input matInput name="company" formControlName="company" />
+							<mat-error>{{ checkout.getErrorMessage('company', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="checkout-input required no-margin">
+							<mat-label>Phone Number *</mat-label>
+							<input matInput name="phone" formControlName="phone" />
+							<mat-error>{{ checkout.getErrorMessage('phone', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="line address_check">
+						<div class="gm_results">
+							<mat-form-field appearance="outline" class="checkout-input">
+								<mat-label>Street Address * (type to autofill)</mat-label>
+								<input
+									*ngIf="type === 'shipping'"
+									matInput
+									name="address1"
+									formControlName="address1"
+									#addressInput
+									(input)="verifyAddress(addressInput.value, lineItemForm ? lineItemForm : checkout.globalItemForm)"
+								/>
+								<input
+									*ngIf="type === 'billing'"
+									matInput
+									name="address1"
+									formControlName="address1"
+									#addressInput
+									(input)="verifyAddress(addressInput.value, lineItemForm ? lineItemForm : checkout.globalItemForm)"
+								/>
+								<mat-error>{{ checkout.getErrorMessage('address1', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+							</mat-form-field>
+							<mat-form-field appearance="outline" class="checkout-input full">
+								<mat-label>Apartment, Suite, Buzzer, Etc. (Optional)</mat-label>
+								<input matInput name="address2" formControlName="address2" />
+								<mat-error>{{ checkout.getErrorMessage('address2', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="line">
+						<mat-form-field appearance="outline" class="checkout-input full required">
+							<mat-label>Country</mat-label>
+							<select matNativeControl name="country" formControlName="country" class="checkout-select" (change)="onCountryChange($event.target.value)">
+								<option *ngFor="let country of checkout.countries[type]" [value]="country.name">{{ country.name }}</option>
+							</select>
+							<mat-error>{{ checkout.getErrorMessage('country', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+
+						<mat-form-field appearance="outline" class="checkout-input required">
+							<mat-label>Province/State</mat-label>
+							<input matInput (input)="onStateInputChange($event.target.value)" (click)="onStateInputChange('')" name="stateOrProvince" formControlName="stateOrProvince" [matAutocomplete]="auto" />
+							<mat-autocomplete #auto="matAutocomplete" panelClass="custom-autocomplete-panel">
+								<mat-option *ngFor="let state of filteredStates" [value]="state.name">
+									{{ state.name }}
+								</mat-option>
+							</mat-autocomplete>
+							<mat-error>{{ checkout.getErrorMessage('stateOrProvince', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="line">
+						<mat-form-field appearance="outline" class="checkout-input required no-margin">
+							<mat-label>City*</mat-label>
+							<input matInput name="city" formControlName="city" />
+							<mat-error>{{ checkout.getErrorMessage('city', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="checkout-input required">
+							<mat-label>Postal Code/Zip *</mat-label>
+							<input matInput name="postalCode" formControlName="postalCode" />
+							<mat-error>{{ checkout.getErrorMessage('postalCode', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+						</mat-form-field>
+					</div>
+				</form>
+			</div>
+		</mat-radio-group>
+	</div>
+
+	<!-- Guest Form(s) -->
+	<div class="guest" *ngIf="!checkout.customerAddresses?.length">
+		<button
+			mat-flat-button
+			*ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)"
+			class="minimize-button"
+			(click)="toggleAddressForm(lineItemForm ? lineItemForm : checkout.globalItemForm, false)"
+		>
+			<mat-icon>expand_less</mat-icon>
+		</button>
+		<form
+			[ngClass]="{ 'full-form': isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm) }"
+			[formGroup]="lineItemForm ? lineItemForm : checkout.globalItemForm"
+			(input)="updateAddress(lineItemForm ? lineItemForm?.showNewAddressForm?.value : checkout.globalItemForm?.showNewAddressForm?.value, type)"
+		>
+			<div class="line">
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>First Name *</mat-label>
+					<input matInput name="firstName" formControlName="firstName" />
+					<mat-error>{{ checkout.getErrorMessage('firstName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="checkout-input required no-margin">
+					<mat-label>Last Name *</mat-label>
+					<input matInput name="lastName" formControlName="lastName" />
+					<mat-error>{{ checkout.getErrorMessage('lastName', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="line">
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Company Name</mat-label>
+					<input matInput name="company" formControlName="company" />
+					<mat-error>{{ checkout.getErrorMessage('company', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Phone Number * <small *ngIf="type == 'shipping'">(for Delivery Purposes)</small></mat-label>
+					<input matInput name="phone" formControlName="phone" />
+					<mat-error>{{ checkout.getErrorMessage('phone', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="line address_check prompt" [ngClass]="{ 'full-form': isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm) }">
+				<div
+					class="gm_results"
+					[ngClass]="{ 'full-form': isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm) }"
+					*ngIf="(type == 'shipping' && checkout.isDelivery()) || type == 'billing'"
+				>
+					<!-- Shipping -->
+					<mat-form-field appearance="outline" class="checkout-input" *ngIf="type == 'shipping'">
+						<mat-label *ngIf="!isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)">Please start typing the {{ type }} address to enable autofill</mat-label>
+						<mat-label *ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)">Street Address * (type to autofill)</mat-label>
+						<input matInput name="address1" formControlName="address1" #addressInput (input)="verifyAddress(addressInput.value, lineItemForm ? lineItemForm : checkout.globalItemForm)" />
+						<mat-error>{{ checkout.getErrorMessage('address1', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<!-- Billing -->
+					<mat-form-field appearance="outline" class="checkout-input" *ngIf="type == 'billing'">
+						<mat-label>Please start typing the {{ type }} address to enable autofill</mat-label>
+						<input matInput name="address1" formControlName="address1" #addressInput (input)="verifyAddress(addressInput.value, lineItemForm)" />
+						<mat-error>{{ checkout.getErrorMessage('address1', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="or" *ngIf="lineItemForm ? !lineItemForm?.showNewAddressForm : !checkout.globalItemForm?.showNewAddressForm">- or -</div>
+				<button
+					*ngIf="lineItemForm ? !lineItemForm?.showNewAddressForm : !checkout.globalItemForm?.showNewAddressForm"
+					mat-flat-button
+					class="manual"
+					(click)="toggleAddressForm(lineItemForm ? lineItemForm : checkout.globalItemForm, true)"
+				>
+					Enter Address Manually
+				</button>
+				<mat-form-field appearance="outline" class="checkout-input" *ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)">
+					<mat-label>Apartment, Suite, Buzzer, Etc. (Optional)</mat-label>
+					<input matInput name="address2" formControlName="address2" />
+					<mat-error>{{ checkout.getErrorMessage('address2', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="line" *ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)">
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Country</mat-label>
+					<select matNativeControl name="country" formControlName="country" class="checkout-select" (change)="onCountryChange($event.target.value)">
+						<option *ngFor="let country of checkout.countries[type]" [value]="country.name">{{ country.name }}</option>
+					</select>
+					<mat-error>{{ checkout.getErrorMessage('country', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Province/State</mat-label>
+					<input matInput (input)="onStateInputChange($event.target.value)" (click)="onStateInputChange('')" name="stateOrProvince" formControlName="stateOrProvince" [matAutocomplete]="auto" />
+					<mat-autocomplete #auto="matAutocomplete" panelClass="custom-autocomplete-panel">
+						<mat-option *ngFor="let state of filteredStates" [value]="state.name">
+							{{ state.name }}
+						</mat-option>
+					</mat-autocomplete>
+					<mat-error>{{ checkout.getErrorMessage('stateOrProvince', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="line" *ngIf="isExpandedForm(lineItemForm ? lineItemForm : checkout.globalItemForm)">
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>City *</mat-label>
+					<input matInput name="city" formControlName="city" />
+					<mat-error>{{ checkout.getErrorMessage('city', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Postal Code/Zip *</mat-label>
+					<input matInput name="postalCode" formControlName="postalCode" />
+					<mat-error>{{ checkout.getErrorMessage('postalCode', lineItemForm ? lineItemForm : checkout.globalItemForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,32 @@
+@import '../../../../app.component.scss';
+
+#adyen-paypal {
+	margin-top: 2rem;
+
+	::ng-deep {
+		.adyen-checkout__dropin {
+			@media (min-width: $xl) {
+				max-width: 50%;
+				margin: 0 auto !important;
+			}
+		}
+		li {
+			background-color: transparent !important;
+			border: none !important;
+
+			&::marker {
+				display: none !important;
+				color: transparent !important;
+				content: none !important;
+			}
+
+			.adyen-checkout__payment-method__header {
+				display: none !important;
+			}
+
+			.paypal-button-container {
+				margin: 0 auto !important;
+			}
+		}
+	}
+}

@@ -1,0 +1,787 @@
+@import '../../../app.component.scss';
+
+#shipping-step {
+	padding-top: 30px;
+
+	.mat-radio-group {
+		display: flex;
+		gap: 15px;
+		flex-direction: column;
+
+		@media (min-width: $tablet) {
+			flex-direction: row;
+		}
+
+		.mat-radio-button {
+			background-color: transparent;
+			border: 1px solid $black;
+			transition: 0.2s all ease;
+			width: 100%;
+
+			@media (min-width: $tablet) {
+				width: 50%;
+			}
+
+			&:hover {
+				background-color: $offWhite;
+			}
+
+			&.mat-radio-checked {
+				background-color: $baskitsGrey;
+				color: $white;
+
+				::ng-deep {
+					.mat-radio-label-content {
+						font-weight: 500;
+					}
+
+					.mat-radio-inner-circle {
+						background-color: $baskitsBlue;
+					}
+					.mat-radio-outer-circle {
+						border-color: $baskitsBlue;
+					}
+
+					.mat-icon {
+						color: $baskitsBlue;
+					}
+				}
+			}
+
+			::ng-deep {
+				.mat-radio-label {
+					padding: 15px 20px;
+					gap: 15px;
+
+					.mat-radio-container {
+						display: none;
+					}
+
+					.mat-radio-label-content {
+						font-family: 'Heebo';
+						font-size: 16px;
+						padding: 0;
+						display: flex;
+						gap: 12px;
+
+						.mat-icon {
+							vertical-align: middle;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	h3 {
+		margin: 15px 0 1rem;
+		font-weight: 500;
+		font-size: 22px;
+
+		@media (max-width: calc($tablet - 1px)) {
+			margin: 0 0 1rem 0;
+			font-size: 20px;
+		}
+	}
+
+	.ship-delivery {
+		padding: 25px 0;
+		.address-header {
+			margin: 0 0 20px;
+			display: flex;
+			gap: 15px;
+			align-items: center;
+			// justify-content: space-between;
+			justify-content: flex-end;
+			@media (max-width: calc($desktop - 1px)) {
+				flex-direction: column;
+				// align-items: flex-start;
+				align-items: center;
+			}
+		}
+		.toggle-button {
+			background-color: $baskitsBlue;
+			border-color: $baskitsBlue;
+			font-size: 16px;
+			width: 100%;
+			padding: 5px;
+			&:hover {
+				background-color: transparent;
+				color: $black;
+				border-color: $black;
+			}
+		}
+
+		.card-messages {
+			margin-top: 15px;
+			h3 {
+				@media (max-width: calc($tablet - 1px)) {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+					padding-bottom: 5px;
+				}
+			}
+			::ng-deep {
+				.item {
+					flex-wrap: wrap;
+					.delivery-header {
+						display: flex;
+						align-items: center;
+						border-top: 1px solid rgba(0, 0, 0, 0.1);
+						padding-top: 10px;
+						margin-top: 5px;
+						h3 {
+							@media (max-width: calc($tablet - 1px)) {
+								padding-bottom: 0;
+								border-bottom: none;
+							}
+						}
+						.mat-flat-button {
+							background-color: transparent;
+							border-color: transparent;
+							padding: 0;
+							&:hover {
+								background-color: transparent;
+								border-color: transparent;
+							}
+							.mat-icon {
+								vertical-align: baseline;
+								color: $black;
+							}
+						}
+					}
+				}
+
+				checkout-address {
+					width: 100%;
+					font-size: 16px;
+					.checkout-address {
+						display: block;
+						margin: 0;
+						.mat-form-field-outline {
+							background-color: $white;
+						}
+					}
+				}
+			}
+		}
+
+		::ng-deep {
+			.choose-address {
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+				max-height: 37vh;
+				overflow-y: scroll;
+
+				// @media (min-width: $xl) {
+				// 	max-height: 31vh;
+				// }
+
+				& {
+					scrollbar-width: thin;
+					scrollbar-color: rgba(0, 0, 0, 1) $white;
+				}
+
+				/* Chrome, Edge, and Safari */
+				&::-webkit-scrollbar {
+					width: 5px;
+				}
+
+				&::-webkit-scrollbar-track {
+					background: transparent;
+				}
+
+				&::-webkit-scrollbar-thumb {
+					background-color: rgba(0, 0, 0, 01);
+					border-radius: 0;
+					border: 5px solid transparent;
+				}
+
+				// @media (min-width: $xl) {
+				// 	flex-wrap: wrap;
+				// 	flex-direction: row;
+				// }
+				.address-div {
+					width: 99%;
+					// @media (min-width: $xl) {
+					// 	width: 49%;
+					// }
+					.address-header {
+						position: relative;
+						.mat-radio-button,
+						.mat-radio-label,
+						.mat-radio-label-content {
+							width: 100%;
+						}
+						.mat-radio-button {
+							background-color: rgba(255, 255, 255, 0.9);
+							border: 1px solid rgba(0, 0, 0, 0.4);
+							transition: 0.2s all ease;
+
+							&:hover {
+								background-color: rgba(0, 0, 0, 0.1);
+							}
+
+							.mat-radio-label {
+								padding: 15px 20px;
+								gap: 18px;
+								.mat-radio-container {
+									// display: none;
+									.mat-radio-outer-circle {
+										border-color: rgba(0, 0, 0, 0.4);
+									}
+									.mat-radio-inner-circle {
+										background-color: rgba(0, 0, 0, 0.4);
+									}
+								}
+								.mat-radio-label-content {
+									display: flex;
+									flex-direction: column;
+									gap: 0;
+									line-height: 26px;
+									font-family: 'Heebo';
+									font-size: 16px;
+									font-weight: 400;
+									padding: 0;
+									p {
+										margin: 0;
+									}
+									.content {
+										white-space: break-spaces;
+										.name {
+											font-weight: 600;
+										}
+										p {
+											padding-right: 25px;
+											font-size: 15px;
+											line-height: 22px;
+										}
+									}
+								}
+							}
+
+							&.mat-radio-checked,
+							&.checked {
+								background-color: $baskitsBlue;
+								border-color: $baskitsBlue;
+								color: $white;
+								border: 1px solid rgba(0, 0, 0, 0.1);
+								.mat-radio-label-content {
+									font-weight: 500;
+								}
+								.mat-radio-container {
+									.mat-radio-inner-circle {
+										background-color: $black;
+										transform: scale(0.5);
+										opacity: 1;
+										transition: transform ease 280ms, background-color ease 280ms;
+									}
+									.mat-radio-outer-circle {
+										border-color: $black;
+									}
+								}
+								.edit-address {
+									color: $white;
+								}
+							}
+						}
+						.edit-address {
+							position: absolute;
+							top: 50%;
+							right: 15px;
+							transform: translateY(-50%);
+							font-size: 14px;
+						}
+
+						&.expanded {
+							& + form {
+								width: 100%;
+								background-color: $offWhite;
+								padding: 20px 20px 5px 20px;
+								border: 1px solid rgba(0, 0, 0, 0.1);
+							}
+						}
+					}
+
+					order: 3;
+					&.new {
+						order: 0;
+					}
+					&.checked {
+						animation: slide 2s ease;
+						order: 1;
+					}
+					@keyframes slide {
+						from {
+							order: 3;
+						}
+						to {
+							order: 1;
+						}
+					}
+
+					&.invalidForm.checked {
+						.mat-radio-button {
+							border: 1px solid $errorRed;
+							color: $black;
+							background: #fae5e5;
+							&::ng-deep {
+								.mat-radio-label-content {
+									font-weight: 400;
+								}
+							}
+						}
+						.mat-icon {
+							color: $errorRed;
+						}
+					}
+				}
+
+				&.expanded {
+					max-height: 60vh;
+					::ng-deep {
+						.address-div {
+							width: 99%;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.ship-pickup {
+		padding: 15px 0 30px;
+
+		.mat-radio-group {
+			flex-direction: column;
+			.mat-radio-button {
+				gap: 0;
+				transition: 0.2s all ease;
+
+				@media (max-width: calc($tablet - 1px)) {
+					width: 100%;
+				}
+
+				::ng-deep {
+					.mat-radio-label {
+						.mat-radio-label-content {
+							flex-direction: column;
+							gap: 0;
+							line-height: 26px;
+							.name {
+								font-weight: 500;
+							}
+						}
+					}
+				}
+
+				&.mat-radio-checked,
+				&.checked {
+					background-color: $baskitsBlue;
+					border-color: $baskitsBlue;
+					color: $white;
+					::ng-deep {
+						.mat-radio-inner-circle {
+							background-color: $black;
+							transform: scale(0.5);
+							opacity: 1;
+							transition: transform ease 280ms, background-color ease 280ms;
+						}
+						.mat-radio-outer-circle {
+							border-color: $black;
+						}
+
+						.mat-radio-label-content {
+							font-weight: 400;
+
+							.name {
+								font-weight: 500;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		::ng-deep {
+			.items-container {
+				.item-address {
+					display: none !important;
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		.checkout-address {
+			display: block;
+			margin: 0;
+			position: relative;
+			.line {
+				display: flex;
+				gap: 15px;
+				width: 100%;
+
+				@media (max-width: calc($tablet - 1px)) {
+					flex-direction: column;
+					gap: 0;
+				}
+				.mat-form-field {
+					width: 100%;
+				}
+			}
+
+			.gm_results {
+				position: relative;
+				width: 100%;
+				column-gap: 15px;
+
+				& + .mat-form-field {
+					@media (min-width: $desktop) {
+						width: 50%;
+					}
+				}
+				.pac-container {
+					width: 100% !important;
+					top: 50px !important;
+					left: 0 !important;
+					box-shadow: unset !important;
+					border: 1px solid #eee !important;
+					border-top-color: $black !important;
+					&::after {
+						display: none !important;
+					}
+					.pac-item {
+						font-size: 14px;
+						line-height: 35px;
+						.pac-item-query {
+							font-size: 14px;
+						}
+					}
+				}
+
+				&.full-form {
+					@media (min-width: $desktop) {
+						width: 50%;
+					}
+				}
+
+				&:not(.full-form) {
+					display: flex;
+					justify-content: space-between;
+
+					@media (max-width: calc($desktop - 1px)) {
+						flex-direction: column;
+						// padding-bottom: 15px;
+					}
+					@media (min-width: $desktop) {
+						width: 100%;
+					}
+
+					.checkout-input {
+						@media (min-width: $desktop) {
+							width: 70%;
+						}
+					}
+				}
+			}
+
+			.prompt {
+				.gm_results {
+					@media (min-width: $tablet) {
+						width: 70%;
+					}
+					.checkout-input {
+						width: 100% !important;
+					}
+				}
+
+				.or {
+					text-align: center;
+					font-style: italic;
+					@media (max-width: calc($tablet - 1px)) {
+						padding-bottom: 5px;
+						margin-top: -7px;
+					}
+					@media (min-width: $tablet) {
+						padding-top: 12px;
+						width: 8%;
+					}
+				}
+
+				.mat-flat-button {
+					height: 52px;
+					background-color: $mediumGrey;
+					color: $white;
+					border-color: $mediumGrey;
+					@media (max-width: calc($desktop - 1px)) {
+						margin-bottom: 15px;
+					}
+					&:hover {
+						background-color: $black;
+						border-color: $black;
+					}
+				}
+				&.full-form {
+					.gm_results {
+						@media (min-width: $tablet) {
+							width: 50%;
+							& + .mat-form-field {
+								width: 50%;
+							}
+						}
+					}
+				}
+			}
+
+			.minimize-button {
+				position: absolute;
+				top: -52px;
+				right: 0;
+			}
+
+			.minimized {
+				display: none;
+			}
+
+			.mat-form-field-outline {
+				background-color: $white;
+			}
+		}
+
+		.global-address {
+			margin: 25px 0 10px 0;
+			background-color: $offWhite;
+			padding: 5px 25px;
+
+			@media (max-width: calc($desktop - 1px)) {
+				padding: 15px 15px 10px 15px;
+
+				h3 {
+					border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+					padding-bottom: 5px;
+				}
+			}
+
+			.address-header {
+				.mat-radio-button {
+					background-color: transparent;
+					&:hover {
+						background-color: $offWhite;
+					}
+				}
+			}
+		}
+	}
+
+	.card-messages {
+		margin: 30px 0 15px 0;
+		::ng-deep {
+			.items-container {
+				display: flex;
+				flex-direction: column;
+				gap: 25px;
+
+				&.single-address {
+					gap: 0;
+					.item {
+						&:not(:first-of-type) {
+							padding-top: 0;
+						}
+					}
+				}
+
+				.item {
+					font-family: 'Heebo';
+					font-size: 14px;
+					background-color: $offWhite;
+					padding: 5px 25px 20px 25px;
+
+					@media (max-width: calc($desktop - 1px)) {
+						padding: 15px;
+					}
+
+					.item-row {
+						display: flex;
+						gap: 15px;
+						justify-content: space-between;
+						@media (min-width: $desktop) {
+							gap: 30px;
+						}
+					}
+					.left {
+						width: 21%;
+						display: flex;
+						align-self: flex-start;
+						flex-direction: column;
+						@media (max-width: calc($desktop - 1px)) {
+							width: 30%;
+							align-self: baseline;
+						}
+						.item-name {
+							margin: 10px 0;
+							font-style: italic;
+							font-size: 15px;
+							overflow-wrap: break-word;
+							@media (min-width: $tablet) {
+								font-size: 17px;
+							}
+						}
+					}
+					.right {
+						display: flex;
+						width: 79%;
+						gap: 25px;
+						@media (max-width: calc($desktop - 1px)) {
+							flex-wrap: wrap;
+							width: 63%;
+						}
+						.details {
+							width: 100%;
+						}
+						.item-options {
+							width: 100%;
+							@media (max-width: calc($desktop - 1px)) {
+								flex-direction: column;
+							}
+						}
+						.checkout-input {
+							::ng-deep {
+								.mat-form-field-subscript-wrapper {
+									margin-top: -12px;
+									.mat-hint {
+										font-size: 12px;
+									}
+								}
+							}
+						}
+					}
+					.item-options {
+						display: flex;
+						.checkout-input.mat-form-field-invalid.ng-touched {
+							margin: 0 0 1rem !important;
+						}
+						@media (min-width: $desktop) {
+							gap: 25px;
+						}
+						.left,
+						.right {
+							width: 50%;
+							display: block;
+							@media (max-width: calc($desktop - 1px)) {
+								width: 100%;
+							}
+							.upper-label {
+								margin: 0 0 10px;
+								font-weight: bold;
+								line-height: 15px;
+							}
+							.checkout-input {
+								width: 100%;
+								font-size: 15px;
+								height: 50px;
+
+								&:not(.textarea) {
+									::ng-deep {
+										.mat-form-field-flex {
+											height: 50px;
+										}
+									}
+								}
+
+								&.textarea {
+									height: 141px;
+									textarea {
+										resize: none;
+										height: 118px;
+									}
+									::ng-deep {
+										.mat-form-field-outline {
+											height: 141px;
+										}
+										.mat-form-field-wrapper {
+											height: 100%;
+											padding-bottom: 1.1em;
+										}
+										.mat-hint {
+											margin-top: 1.5rem;
+										}
+									}
+								}
+								::ng-deep {
+									.mat-form-field-outline {
+										background-color: $white;
+									}
+								}
+							}
+						}
+						h5 {
+							margin: 0 0 11px;
+							font-size: 16px;
+							text-transform: uppercase;
+							font-weight: bold;
+							letter-spacing: 0.5px;
+							color: $black;
+						}
+						.right {
+							h5 {
+								@media (min-width: $desktop) {
+									margin-bottom: 31px;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@media (min-width: $desktop) {
+		.items-container {
+			&.single-address {
+				.item {
+					&:not(:last-of-type) {
+						.item-row {
+							padding-bottom: 15px;
+							border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.actions {
+		display: flex;
+		place-content: space-between;
+		margin: 25px 0 0 0;
+		.continue-button,
+		.return-button {
+			font-size: 16px;
+			height: 50px;
+			line-height: 50px;
+			padding: 0 25px;
+
+			@media (max-width: calc($desktop - 1px)) {
+				padding: 0 15px;
+				font-size: 15px;
+			}
+		}
+
+		.return-button {
+			background-color: transparent;
+			color: $black;
+			&:hover {
+				background-color: $black;
+				color: $white;
+			}
+		}
+	}
+
+	.alcohol-notice {
+		margin: 10px 0;
+		text-align: center;
+		color: $errorRed;
+		font-family: 'Heebo';
+	}
+}

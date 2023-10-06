@@ -1,0 +1,134 @@
+<div id="summary-step" class="checkout-step">
+	<h2 class="step-heading">Order Summary</h2>
+
+	<div class="checkout-sub-content">
+		<div class="summary">
+			<div class="items">
+				<mat-list *ngIf="rows?.length">
+					<mat-list-item class="heading">
+						<div class="img-container">Item</div>
+						<div class="details">Card Message</div>
+						<div class="shipping"><span *ngIf="checkout.isDelivery()">Ship To</span><span *ngIf="!checkout.isDelivery()">Pickup Location</span></div>
+						<div class="date"><span *ngIf="checkout.isDelivery()">Delivery Date</span><span *ngIf="!checkout.isDelivery()">Pickup Date</span></div>
+						<div class="price">Price</div>
+					</mat-list-item>
+					<mat-list-item *ngFor="let row of rows" [class.buildProduct]="row.buildProduct" [ngClass]="row.name">
+						<div class="img-container">
+							<img
+								[src]="
+									row.imageUrl
+										? row.imageUrl
+										: row.type?.includes('giftCertificate')
+										? 'https://cdn11.bigcommerce.com/s-guasxd1cdp/stencil/7d97b060-fc44-013b-94a1-0a916f4169f9/e/3cc0f790-fe4d-013b-452c-62dfd34fb321/img/GiftCertificate.png'
+										: 'https://eckerd.org/wp-content/uploads/2022/01/image-coming-soon.jpg'
+								"
+								[alt]="row.name"
+							/>
+							<h3 mat-line *ngIf="(!cc.mobile && !row.buildProduct) || (row.buildProduct && !row.name.toLowerCase().includes(' box'))">{{ row.name }}</h3>
+							<h3 mat-line *ngIf="!cc.mobile && row.buildProduct && row.name.toLowerCase().includes(' box')">Custom Gift Box</h3>
+						</div>
+						<div class="details">
+							<h3 mat-line *ngIf="(cc.mobile && !row.buildProduct) || (row.buildProduct && !row.name.toLowerCase().includes(' box'))">{{ row.name }}</h3>
+							<h3 mat-line *ngIf="cc.mobile && row.buildProduct && row.name.toLowerCase().includes(' box')">Custom Gift Box</h3>
+							<span class="option" mat-line *ngFor="let option of row.options"
+								><strong>{{ option.name }}:</strong> {{ option.value }}</span
+							>
+						</div>
+						<div class="shipping">
+							<div class="left"><span *ngIf="checkout.isDelivery()">Ship To</span><span *ngIf="!checkout.isDelivery()">Pickup Location</span></div>
+							<div class="right">
+								<div *ngIf="row.address">
+									<p>{{ row.address.firstName }} {{ row.address.lastName }}</p>
+									<p>{{ row.address.address1 }}</p>
+									<p *ngIf="row.address.address2">{{ row.address.address2 }}</p>
+									<p>{{ row.address.city }}, {{ row.address.stateOrProvince }}, {{ row.address.postalCode }}</p>
+									<p>{{ row.address.country }}</p>
+									<p>{{ row.address.phone }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="date">
+							<div class="left"><span *ngIf="checkout.isDelivery()">Delivery Date</span><span *ngIf="!checkout.isDelivery()">Pickup Date</span></div>
+							<div class="right">
+								<div>
+									<p mat-line *ngIf="row.shipping_method">{{ row.shipping_method.description }}</p>
+									<p mat-line *ngIf="row.delivery_date">{{ row.delivery_date }}</p>
+									<div class="calendar-notice" *ngIf="checkout.isDelivery() && !row.isLocalDelivery">
+										<mat-icon>info</mat-icon>
+										<div>
+											Delivery dates outside of the GTA are based on carrier's schedules and are not guaranteed. If intended for a specific date, we recommend selecting an early
+											target delivery date.
+										</div>
+									</div>
+									<div class="calendar-notice" *ngIf="checkout.isDelivery() && row.isLocalDelivery">
+										<mat-icon>info</mat-icon>
+										<div>Deliveries within the Greater Toronto Area occur between 9am-5pm, Monday to Friday.</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="price">
+							<div class="left">Price</div>
+							<div class="right">
+								<p mat-line *ngIf="!row.buildTotal && !row.name.toLowerCase().includes(' box')">{{ row.listPrice | currency }}</p>
+								<p mat-line *ngIf="row.buildTotal && row.name.toLowerCase().includes(' box')">{{ row.buildTotal | currency }}</p>
+							</div>
+						</div>
+					</mat-list-item>
+				</mat-list>
+			</div>
+
+			<div class="totals">
+				<div class="note"></div>
+				<div class="subtotals">
+					<div class="line">
+						<span>Subtotal</span>
+						<span class="value">{{ checkout.checkout.subtotal | currency }}</span>
+					</div>
+					<div class="line">
+						<span>Shipping</span>
+						<span class="value">{{ checkout.checkout.shippingCostTotal | currency }}</span>
+					</div>
+					<div class="coupon-list" *ngIf="+checkout.checkout.cart.discountAmount !== 0">
+						<div class="line">
+							<span>Discount</span>
+							<span>{{ checkout.checkout.cart.discountAmount | currency }}</span>
+						</div>
+					</div>
+					<div class="line">
+						<span>Tax</span>
+						<span class="value">{{ checkout.checkout.taxTotal | currency }}</span>
+					</div>
+					<div class="line store-credit" *ngIf="checkout?.customer?.storeCredit && checkout.misc.value.store_credit">
+						<span>Store Credit</span>
+						<span class="value">-{{ checkout.customer.storeCredit | currency }}</span>
+					</div>
+					<mat-divider></mat-divider>
+					<div class="line grand-total">
+						<span>Grand Total</span>
+						<mat-spinner diameter="20" strokeWidth="2" *ngIf="checkout.refreshingCheckout"></mat-spinner>
+						<span class="value"
+							>{{ checkout.grandTotalValue | currency }} <span *ngIf="checkout?.checkout?.cart?.currency?.code !== 'CAD'">{{ checkout.checkout.cart.currency.code }}</span></span
+						>
+					</div>
+					<div class="line store-credit-apply" *ngIf="+checkout.customer.storeCredit > 0">
+						<form [formGroup]="checkout.misc">
+							<mat-checkbox color="primary" formControlName="store_credit" (change)="checkout.toggleStoreCredit()">
+								Apply
+								<span matTooltip="Your account currently has {{ checkout.customer.storeCredit | currency }} total store credit available">{{
+									checkout.getAppliedCredit() | currency : 'CAD'
+								}}</span>
+								store credit to order
+							</mat-checkbox>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="actions">
+		<button class="return-button" mat-flat-button color="primary" (click)="this.cc.stepper.previous()">Edit {{ checkout.isDelivery() ? 'Delivery' : 'Pickup' }} Date</button>
+		<button class="continue-button" mat-flat-button color="primary" (click)="proceedToPayment()">Proceed to Payment</button>
+	</div>
+</div>

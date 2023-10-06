@@ -1,0 +1,80 @@
+<div class="persistent-cart">
+	<div class="your-cart">
+		<h3>Your Cart ({{ checkout.items.length }}) Items</h3>
+		<a mat-flat-button class="edit" href="/cart.php">Edit</a>
+	</div>
+	<mat-list>
+		<mat-list-item *ngFor="let item of checkout.items" [class.buildProduct]="item.buildProduct" [class.buildBox]="item.buildProduct && item.name.toLowerCase().includes(' box')">
+			<div class="img-container">
+				<img
+					[src]="
+						item.imageUrl
+							? item.imageUrl
+							: item.type?.includes('giftCertificate')
+							? 'https://cdn11.bigcommerce.com/s-guasxd1cdp/stencil/7d97b060-fc44-013b-94a1-0a916f4169f9/e/3cc0f790-fe4d-013b-452c-62dfd34fb321/img/GiftCertificate.png'
+							: 'https://eckerd.org/wp-content/uploads/2022/01/image-coming-soon.jpg'
+					"
+					[alt]="item.name"
+				/>
+			</div>
+			<h3 mat-line>
+				<span class="quantity" *ngIf="item.quantity">{{ item.quantity }} x </span>
+				<span *ngIf="!item.buildProduct || (item.buildProduct && !item.name.toLowerCase().includes(' box'))">{{ item.name }}</span>
+				<span *ngIf="item.buildProduct && item.name.toLowerCase().includes(' box')">Custom Gift Box</span>
+			</h3>
+			<span class="option" mat-line *ngFor="let option of item.options"
+				><span class="name">{{ option.name }}:</span> {{ option.value }}</span
+			>
+			<p class="price" mat-line *ngIf="!item.buildProduct && !item.name.toLowerCase().includes(' box')">{{ item.listPrice | currency }}</p>
+			<p class="price" mat-line *ngIf="item.buildProduct && item.name.toLowerCase().includes(' box')">{{ item.buildTotal | currency }}</p>
+		</mat-list-item>
+	</mat-list>
+	<mat-divider></mat-divider>
+	<form class="discount-form coupons" [formGroup]="coupon_form" (submit)="applyCoupon()">
+		<mat-form-field class="checkout-input$white" appearance="outline">
+			<mat-label>Coupon Code</mat-label>
+			<input matInput formControlName="coupon" autocomplete="off" />
+		</mat-form-field>
+		<button mat-flat-button class="apply">Apply</button>
+	</form>
+	<div class="totals">
+		<div class="line">
+			<span>Subtotal</span>
+			<span class="value">{{ checkout.checkout.subtotal | currency }}</span>
+		</div>
+		<div class="line">
+			<span>Shipping</span>
+			<span class="value">{{ checkout.checkout.shippingCostTotal | currency }}</span>
+		</div>
+		<div class="coupon-list" *ngIf="checkout.checkout.coupons && checkout.checkout.coupons.length > 0">
+			<div *ngFor="let coupon of checkout.checkout.coupons" class="coupon">
+				<div class="coupon-body">
+					<div class="coupon-head">
+						<span>{{ coupon.displayName }}</span>
+						<strong (click)="removeCoupon(coupon.code)">remove</strong>
+					</div>
+					<p>{{ coupon.code }}</p>
+				</div>
+				<div class="coupon-price">
+					<span class="value">{{ coupon.discountedAmount | currency }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="line">
+			<span>Tax</span>
+			<span class="value">{{ checkout.checkout.taxTotal | currency }}</span>
+		</div>
+		<div class="line store-credit" *ngIf="checkout.customer && checkout.customer.storeCredit && checkout.customer.storeCredit > 0 && checkout.misc.value.store_credit === true">
+			<span>Store Credit</span>
+			<span class="value">-{{ checkout.customer.storeCredit | currency }}</span>
+		</div>
+		<mat-divider></mat-divider>
+		<div class="line grand-total">
+			<span>Grand Total</span>
+			<mat-spinner diameter="20" strokeWidth="2" *ngIf="checkout.refreshingCheckout"></mat-spinner>
+			<span class="value"
+				>{{ checkout.grandTotalValue | currency }} <span *ngIf="checkout?.checkout?.cart?.currency?.code !== 'CAD'">{{ checkout?.checkout?.cart?.currency?.code }}</span></span
+			>
+		</div>
+	</div>
+</div>

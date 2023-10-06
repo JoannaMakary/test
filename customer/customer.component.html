@@ -1,0 +1,63 @@
+<div id="customer-step" class="checkout-step">
+	<h2 class="step-heading">Sender</h2>
+
+	<div class="checkout-sub-content">
+		<form [formGroup]="loginForm">
+			<div class="guest" *ngIf="!loginPrompted">
+				<div class="continue">
+					<mat-form-field appearance="outline" class="checkout-input">
+						<mat-label>Email address</mat-label>
+						<input matInput type="email" formControlName="email" />
+						<mat-icon matSuffix class="input-icon" [ngClass]="{ 'show-icon': !loginForm.get('email').touched || (loginForm.get('email').touched && !loginForm.get('email').invalid) }">
+							person
+						</mat-icon>
+						<mat-icon matSuffix class="error-icon" [ngClass]="{ 'show-icon': loginForm.get('email').invalid && loginForm.get('email').touched }"> error_outline </mat-icon>
+						<mat-error>{{ checkout.getErrorMessage('email', loginForm, checkout.forms) }}</mat-error>
+					</mat-form-field>
+					<mat-checkbox formControlName="email_opt_in" color="primary" (change)="updateGuestSession()">Sign up for our emails</mat-checkbox>
+					<button class="guest-button" mat-flat-button color="primary" (click)="continueAsGuest()">Continue</button>
+				</div>
+
+				<p class="already" (click)="toggleLogin()">Already have an account? <span>Sign in now</span></p>
+			</div>
+
+			<div class="customer" *ngIf="loginPrompted">
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Email address</mat-label>
+					<input matInput type="email" formControlName="email" />
+					<mat-icon matSuffix class="input-icon" [ngClass]="{ 'show-icon': !loginForm.get('email').touched || (loginForm.get('email').touched && !loginForm.get('email').invalid) }">
+						person
+					</mat-icon>
+					<mat-icon matSuffix class="error-icon" [ngClass]="{ 'show-icon': loginForm.get('email').invalid && loginForm.get('email').touched }"> error_outline </mat-icon>
+					<mat-error>{{ checkout.getErrorMessage('email', loginForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline" class="checkout-input">
+					<mat-label>Password</mat-label>
+					<input matInput type="password" formControlName="password" placeholder="Password" />
+					<mat-icon matSuffix class="input-icon" [ngClass]="{ 'show-icon': !loginForm.get('password').touched || (loginForm.get('password').touched && !loginForm.get('password').invalid) }">
+						lock
+					</mat-icon>
+					<mat-icon matSuffix class="error-icon" [ngClass]="{ 'show-icon': loginForm.get('password').invalid && loginForm.get('password').touched }"> error_outline </mat-icon>
+					<mat-error>{{ checkout.getErrorMessage('password', loginForm, checkout.forms) }}</mat-error>
+				</mat-form-field>
+
+				<mat-checkbox formControlName="email_opt_in" color="primary" (change)="updateGuestSession()">Sign up for our emails</mat-checkbox>
+
+				<div class="error-alert" *ngIf="error">
+					<mat-icon>error</mat-icon>
+					<div>{{ error }}</div>
+				</div>
+
+				<div class="actions">
+					<button class="sign-in-button" mat-flat-button color="primary" (click)="signInCustomer(loginForm)">Sign In</button>
+					<button class="cancel-button" mat-flat-button color="primary" (click)="toggleLogin()">Cancel</button>
+				</div>
+
+				<div class="password-container">
+					<a class="forgot-password" href="./login.php?action=reset_password">Forgot your password?</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

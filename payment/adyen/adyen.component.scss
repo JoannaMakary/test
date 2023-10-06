@@ -1,0 +1,11 @@
+::ng-deep {
+	.active {
+		.adyen-payment-container {
+			padding: 0 20px 20px 20px;
+			.adyen-checkout__label__text {
+				color: white;
+				font-family: 'Heebo';
+			}
+		}
+	}
+}

@@ -1,0 +1,118 @@
+<div id="baskits-checkout">
+	<div id="confirmation-step" class="checkout-step">
+		<div *ngIf="order" class="order">
+			<h2 class="step-heading">Order Confirmation</h2>
+			<div>
+				<p>
+					Thank you for your order<span *ngIf="customer">, {{ customer.first_name }}!</span>
+				</p>
+				<p>We're excited to start putting it together to make their day! You can check your order's status [<a href="/track-order/">here</a>].</p>
+			</div>
+
+			<div>
+				<p>
+					Your order number is <strong>{{ order.id }}</strong
+					>. You will receive a confirmation email shortly and another email once your order has been shipped.
+				</p>
+			</div>
+
+			<!-- <div class="discover">
+				<p style="margin: 2rem 0"><em>Placeholder for Klaviyo form</em></p>
+			</div> -->
+
+			<div class="create-new-account" *ngIf="promptCreateAccount">
+				<div class="title">Thank you for shopping with Baskits!</div>
+
+				<div *ngIf="!createdAccount">
+					<div class="message">To finish creating your account, please create a password below. Once you're set, you'll have access to your account history, order tracking, and more!</div>
+
+					<form [formGroup]="accountForm">
+						<mat-form-field appearance="outline" class="checkout-input">
+							<mat-label>Email address</mat-label>
+							<input matInput type="email" formControlName="email" />
+							<mat-icon
+								matSuffix
+								class="input-icon"
+								[ngClass]="{ 'show-icon': !accountForm.get('email').touched || (accountForm.get('email').touched && !accountForm.get('email').invalid) }"
+							>
+								person
+							</mat-icon>
+							<mat-icon matSuffix class="error-icon" [ngClass]="{ 'show-icon': accountForm.get('email').invalid && accountForm.get('email').touched }"> error_outline </mat-icon>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="checkout-input">
+							<mat-label>Password</mat-label>
+							<input matInput type="password" formControlName="password" placeholder="Password" />
+							<mat-icon
+								matSuffix
+								class="input-icon"
+								[ngClass]="{ 'show-icon': !accountForm.get('password').touched || (accountForm.get('password').touched && !accountForm.get('password').invalid) }"
+							>
+								lock
+							</mat-icon>
+							<mat-icon matSuffix class="error-icon" [ngClass]="{ 'show-icon': accountForm.get('password').invalid && accountForm.get('password').touched }"> error_outline </mat-icon>
+							<mat-error *ngIf="accountForm.get('password').hasError('required') && accountForm.get('password').touched"> Password is required </mat-error>
+							<mat-error *ngIf="accountForm.get('password').hasError('minlength') && accountForm.get('password').touched"> Passwords must be at least 7 characters </mat-error>
+							<mat-error *ngIf="accountForm.get('password').hasError('pattern') && accountForm.get('password').touched">
+								Passwords must contain both alphabetic and numeric characters
+							</mat-error>
+						</mat-form-field>
+						<mat-checkbox formControlName="email_opt_in" color="primary">Sign up for our emails</mat-checkbox>
+						<button mat-flat-button class="create" (click)="savePassword()">Create Your Account</button>
+					</form>
+				</div>
+
+				<div *ngIf="createdAccount">Your account has been successfully created!</div>
+			</div>
+
+			<button mat-flat-button class="continue" (click)="navigateToHome()">Continue Shopping</button>
+		</div>
+
+		<div *ngIf="order" class="summary">
+			<h3 class="title">Order Summary</h3>
+			<mat-list *ngIf="products">
+				<mat-list-item *ngFor="let product of products">
+					<h3 mat-line>{{ product.quantity }} x {{ product.name }}</h3>
+					<span class="option" mat-line *ngFor="let option of product.product_options">{{ option.name }}: {{ option.value }}</span>
+					<p class="price" mat-line>{{ product.total_ex_tax | currency }}</p>
+					<p class="shipping" mat-line *ngIf="product.shipping_address">
+						<strong>Address:</strong> {{ product.shipping_address.street_1 }}, {{ product.shipping_address.city }}, {{ product.shipping_address.state }},
+						{{ product.shipping_address.zip }},
+						{{ product.shipping_address.country_iso2 }}
+					</p>
+					<p class="shipping" mat-line *ngIf="product.shipping_address"><strong>Method:</strong> {{ product.shipping_address.shipping_method }}</p>
+					<p class="d-date" mat-line *ngIf="product.delivery_date"><strong>Delivery Date:</strong> {{ product.delivery_date }}</p>
+				</mat-list-item>
+			</mat-list>
+			<mat-divider></mat-divider>
+			<div class="totals">
+				<div class="line">
+					<span>Subtotal</span>
+					<span class="value">{{ order.subtotal_ex_tax | currency }}</span>
+				</div>
+				<div class="line">
+					<span>Shipping</span>
+					<span class="value">{{ order.shipping_cost_ex_tax | currency }}</span>
+				</div>
+				<div class="coupon-list" *ngIf="+order.coupon_discount !== 0">
+					<div class="line">
+						<span>Discount</span>
+						<span>{{ order.coupon_discount | currency }}</span>
+					</div>
+				</div>
+				<div class="line">
+					<span>Tax</span>
+					<span class="value">{{ order.total_tax | currency }}</span>
+				</div>
+				<div class="line store-credit" *ngIf="+order.store_credit_amount !== 0">
+					<span>Store Credit</span>
+					<span class="value">-{{ order.store_credit_amount | currency }}</span>
+				</div>
+				<mat-divider></mat-divider>
+				<div class="line grand-total">
+					<span>Grand Total</span>
+					<span class="value">{{ order.total_inc_tax | currency }}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

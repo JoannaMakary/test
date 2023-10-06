@@ -1,0 +1,475 @@
+@import '../../../app.component.scss';
+
+#payment-step {
+	padding-top: 30px;
+
+	.step-heading {
+		padding-bottom: 15px;
+		border-bottom: 1px solid $offWhite;
+	}
+
+	.wrapper {
+		display: flex;
+		gap: 20px;
+		margin: 3rem 0 0;
+
+		@media (min-width: $lg) {
+			gap: 30px;
+		}
+
+		@media (max-width: calc($lg - 1px)) {
+			flex-wrap: wrap;
+			checkout-billing,
+			.payment-gateways {
+				width: 100%;
+			}
+		}
+
+		@media (min-width: $lg) {
+			checkout-billing {
+				width: 50%;
+				position: relative;
+			}
+			.payment-gateways {
+				width: 50%;
+			}
+		}
+	}
+
+	.subtitle {
+		margin: 0 0 10px 0;
+		padding-bottom: 10px;
+		border-bottom: 1px solid $black;
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		font-size: 18px;
+		font-weight: 500;
+	}
+
+	.payment-gateways {
+		font-family: 'Heebo';
+		.gateway-container {
+			display: flex;
+			margin: 0;
+			flex-direction: column;
+			max-width: 100%;
+			margin: 7px 0;
+
+			@media (max-width: calc($desktop - 1px)) {
+				width: 100%;
+				margin: 0 0 0.5rem;
+				&:first-child {
+					margin: 0 0 0.5rem;
+				}
+			}
+
+			.gateway-header {
+				display: flex;
+				padding: 0;
+				justify-content: space-between;
+				width: 100%;
+				cursor: pointer;
+				flex-wrap: wrap;
+				border: 1px solid $black;
+				border-radius: 10px;
+				transition: 0.3s all ease;
+
+				.credit-card-svgs {
+					display: flex;
+					height: 30px;
+					gap: 5px;
+					justify-content: flex-end;
+					.svg-container {
+						height: 30px;
+						width: 40px;
+						::ng-deep {
+							.card {
+								height: 100%;
+								width: 100%;
+							}
+						}
+					}
+				}
+
+				@media (max-width: calc($desktop - 1px)) {
+					flex-wrap: nowrap !important;
+				}
+
+				::ng-deep {
+					.mat-radio-outer-circle {
+						width: 18px;
+						height: 18px;
+					}
+					.mat-radio-inner-circle {
+						top: -1px;
+						left: -1px;
+					}
+				}
+
+				.help-icon {
+					position: static;
+					transform: unset;
+				}
+
+				.mat-radio-button {
+					border: none;
+					padding: 0;
+					width: 100%;
+					::ng-deep {
+						.mat-radio-label {
+							padding: 12px 20px;
+							letter-spacing: 0px;
+							.mat-radio-label-content {
+								padding: 0 0 0 10px;
+								font-family: 'Heebo';
+								display: flex;
+								justify-content: space-between;
+								align-items: center;
+								width: 100%;
+								.credit-card-svgs {
+									width: 25%;
+									// gap: 5px;
+									payment-svgs {
+										display: block;
+										height: 100%;
+										.payment-svg {
+											height: 100%;
+											width: 40px;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				&:hover {
+					background-color: $offWhite;
+				}
+			}
+
+			&.active {
+				&.scheme {
+					.gateway-header {
+						border-bottom-left-radius: 0;
+						border-bottom-right-radius: 0;
+					}
+				}
+				.gateway-header {
+					background-color: $baskitsGrey;
+					border-color: $black;
+					color: $white;
+					border-bottom: none;
+
+					::ng-deep {
+						.mat-radio-label-content {
+							font-weight: 500;
+						}
+					}
+					::ng-deep {
+						.mat-radio-outer-circle {
+							border-color: $baskitsBlue;
+						}
+						.mat-radio-inner-circle {
+							background-color: $baskitsBlue;
+						}
+					}
+				}
+				.credit-card-box {
+					display: flex;
+					background-color: $baskitsGrey;
+					color: $white;
+					width: 100%;
+					border-top: none;
+					border-bottom-left-radius: 10px;
+					border-bottom-right-radius: 10px;
+					flex-wrap: wrap;
+					.new-card {
+						width: 100%;
+						display: flex;
+						flex-direction: column;
+						padding: 10px 20px;
+						.line {
+							.mat-form-field {
+								width: 100%;
+							}
+							&.expiry {
+								display: flex;
+								flex-wrap: wrap;
+								margin-top: -5px;
+								.top {
+									padding-left: 3px;
+									margin-bottom: 5px;
+									width: 100%;
+									font-size: 13px;
+									font-family: 'Heebo';
+								}
+								.bottom {
+									display: flex;
+									justify-content: space-between;
+									column-gap: 10px;
+									width: 100%;
+									.mat-form-field {
+										width: 32%;
+									}
+								}
+							}
+						}
+
+						::ng-deep {
+							.mat-form-field-outline-start,
+							.mat-form-field-outline-gap,
+							.mat-form-field-outline-end {
+								background-color: $white;
+								border-width: 2px !important;
+							}
+						}
+
+						.checkout-input {
+							height: 50px !important;
+							margin: 0 0 1rem !important;
+
+							&.mat-form-field-should-float {
+								::ng-deep {
+									.mat-form-field-underline {
+										display: none !important;
+									}
+
+									.mat-form-field-label {
+										transform: translateY(-11px) scale(1) !important;
+										color: #707070 !important;
+									}
+
+									mat-label {
+										font: normal normal normal 11px/18px 'Heebo' !important;
+									}
+
+									.mat-form-field-outline-gap {
+										border-top-color: currentColor !important;
+									}
+
+									.mat-form-field-infix {
+										border-top-width: 0 !important;
+										padding: 22px 0 10px !important;
+									}
+
+									.mat-form-field-outline-start,
+									.mat-form-field-outline-gap,
+									.mat-form-field-outline-end {
+										border-width: 1px !important;
+									}
+								}
+							}
+
+							&.mat-focused {
+								.input-icon {
+									color: #052f3a !important;
+								}
+							}
+
+							&.mat-form-field-invalid.ng-touched {
+								// margin: 0 0 2rem !important;
+								position: relative !important;
+								mat-label {
+									color: $errorRed !important;
+								}
+								.mat-form-field-subscript-wrapper {
+									margin: 2px 0 !important;
+									position: static !important;
+									text-align: left !important;
+									font: normal normal normal 14px/20px 'Heebo' !important;
+									letter-spacing: 0px !important;
+									color: $errorRed !important;
+									padding: 0 !important;
+								}
+							}
+
+							&.mat-form-field-invalid:not(.ng-touched) {
+								::ng-deep {
+									.mat-form-field-outline-thick {
+										color: $black !important;
+									}
+									.mat-select-arrow {
+										color: $black !important;
+									}
+								}
+							}
+
+							::ng-deep {
+								mat-label {
+									font: normal normal normal 15px/26px 'Heebo' !important;
+									letter-spacing: 0px !important;
+									color: #707070 !important;
+								}
+
+								input {
+									font: normal normal normal 15px 'Heebo' !important;
+									letter-spacing: 0px !important;
+									color: #052f3a !important;
+									background-color: transparent !important;
+								}
+
+								.mat-form-field-wrapper {
+									height: 100% !important;
+									margin: 0 !important;
+									padding: 0 !important;
+								}
+
+								.mat-form-field-flex {
+									margin-top: 0 !important;
+									padding: 0 15px !important;
+									height: 100% !important;
+								}
+
+								.mat-form-field-infix {
+									border-top-width: 0 !important;
+									padding: 17px 0 15px !important;
+								}
+
+								.mat-form-field-outline {
+									height: 100% !important;
+									top: 0 !important;
+									background-color: transparent !important;
+								}
+
+								&::not(.mat-form-field-invalid) {
+									.mat-form-field-outline {
+										border-color: #ced6d9 !important;
+									}
+								}
+
+								.mat-form-field-outline-start {
+									// start is "cut off" because of gap, need to set it more than end
+									border-top-left-radius: 20px !important;
+									border-bottom-left-radius: 20px !important;
+								}
+
+								.mat-form-field-outline-end {
+									border-top-right-radius: 10px !important;
+									border-bottom-right-radius: 10px !important;
+								}
+
+								.mat-form-field-outline-start,
+								.mat-form-field-outline-gap,
+								.mat-form-field-outline-end {
+									transition: 0.2s all ease !important;
+									border-width: 2px !important;
+								}
+
+								.input-icon {
+									display: block !important;
+									position: absolute !important;
+									top: 50% !important;
+									right: 0 !important;
+									transform: translateY(-50%) !important;
+									color: #ced6d9 !important;
+								}
+
+								.mat-form-field-flex:hover {
+									.mat-form-field-outline-start,
+									.mat-form-field-outline-gap,
+									.mat-form-field-outline-end {
+										border-width: 1px !important;
+										border-color: #052f3a !important;
+									}
+								}
+
+								.mat-form-field-outline-thick {
+									.mat-form-field-outline-start,
+									.mat-form-field-outline-gap,
+									.mat-form-field-outline-end {
+										border-width: 1px !important;
+									}
+								}
+
+								.mat-select-arrow-wrapper {
+									transform: translateY(0%) !important;
+								}
+							}
+						}
+					}
+				}
+				.saveCard {
+					padding: 10px 0;
+					width: 100%;
+					font-size: 14px;
+					text-align: center;
+					font-family: 'Heebo';
+					.mat-icon {
+						vertical-align: middle;
+					}
+					.mat-checkbox-frame {
+						border-color: white;
+					}
+					&::ng-deep {
+						.mat-checkbox-label {
+							white-space: break-spaces;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.actions {
+		margin: 3rem 0 0;
+		p {
+			margin: 1rem 0;
+			text-align: center;
+			font-family: 'Heebo';
+			font-size: 14px;
+		}
+		.place-order {
+			width: 100%;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			font-size: 18px;
+			height: 50px;
+			line-height: 50px;
+			background-color: $baskitsBlue;
+			border-color: $baskitsBlue;
+			&:hover {
+				background-color: $black;
+				border-color: $black;
+				color: $white;
+			}
+			&.disabled {
+				background-color: #e6e6e6 !important;
+				border-color: #e6e6e6 !important;
+				color: #acacac !important;
+				pointer-events: none !important;
+			}
+		}
+
+		.billing-notice,
+		.google-notice {
+			margin: 15px 0 0;
+			text-align: center;
+			font-size: 14px;
+			font-family: 'Heebo';
+		}
+
+		#googlepay-button {
+			width: 100%;
+			padding: 1rem 2rem;
+			font-family: 'Heebo';
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+
+			svg {
+				margin: -1px 0.33rem 0 -1rem;
+				width: 15%;
+				vertical-align: middle;
+			}
+
+			&:hover {
+				background-color: rgb(102, 102, 102) !important;
+
+				svg path {
+					fill: white;
+				}
+			}
+		}
+	}
+}

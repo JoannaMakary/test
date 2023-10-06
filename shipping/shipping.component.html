@@ -1,0 +1,171 @@
+<div id="shipping-step" class="checkout-step">
+	<h2 class="step-heading">Message + Address</h2>
+
+	<div class="checkout-sub-content">
+		<form [formGroup]="checkout.misc">
+			<mat-radio-group class="choose-shipping-type" aria-label="Shipping Option" formControlName="shipping_type" color="primary" (change)="resetShipping()">
+				<mat-radio-button value="1"> <mat-icon>local_shipping</mat-icon> Deliver to an Address </mat-radio-button>
+				<mat-radio-button value="2"> <mat-icon>storefront</mat-icon> Pick Up in Store (74 Railside Road)</mat-radio-button>
+			</mat-radio-group>
+
+			<div class="ship-delivery" *ngIf="checkout.isDelivery()">
+				<div class="address-header">
+					<button class="toggle-button" mat-flat-button (click)="toggleMultiAddress()" *ngIf="checkout.items.length > 1">
+						<mat-icon *ngIf="checkout.isMultiAddress">call_merge</mat-icon>
+						<mat-icon *ngIf="!checkout.isMultiAddress">call_split</mat-icon>
+						{{ checkout.isMultiAddress ? 'Ship to Single Address' : 'Ship to Multiple Addresses' }}
+					</button>
+				</div>
+
+				<div *ngIf="checkout?.checkout?.customer" class="card-messages">
+					<ng-container *ngTemplateOutlet="cardMessagesTemplate"></ng-container>
+				</div>
+
+				<div class="address-footer">
+					<button class="toggle-button" mat-flat-button (click)="toggleMultiAddress()" *ngIf="checkout.items.length > 1">
+						<mat-icon *ngIf="checkout.isMultiAddress">call_merge</mat-icon>
+						<mat-icon *ngIf="!checkout.isMultiAddress">call_split</mat-icon>
+						{{ checkout.isMultiAddress ? 'Ship to Single Address' : 'Ship to Multiple Addresses' }}
+					</button>
+				</div>
+
+				<div class="actions">
+					<button class="return-button" mat-flat-button color="primary" (click)="this.cc.stepper.previous()">Edit Sender</button>
+					<button class="continue-button" mat-flat-button color="primary" (click)="proceedToDelivery()" [class.disabled]="!isValidAddresses() || checkout.refreshingCheckout">
+						<span *ngIf="!checkout.refreshingCheckout">Delivery Date</span>
+						<mat-spinner diameter="20" strokeWidth="2" *ngIf="checkout.refreshingCheckout"></mat-spinner>
+					</button>
+				</div>
+				<div class="error-notice" *ngIf="!isValidAddresses()">
+					<span>{{ getErroredFields() }}</span>
+				</div>
+			</div>
+
+			<div class="ship-pickup" *ngIf="!checkout.isDelivery()">
+				<h3 hidden>Select a Store to Pick Up from for Free</h3>
+				<mat-radio-group class="choose-store" aria-label="Pick Up Option" formControlName="pickup_store" color="primary" hidden>
+					<mat-radio-button *ngFor="let store of stores" [value]="store">
+						<div class="name">{{ store.firstName }} {{ store.lastName }}</div>
+						<div name="address">{{ store.address1 }}, {{ store.address2 }}, {{ store.stateOrProvinceCode }} {{ store.postalCode }}</div>
+					</mat-radio-button>
+				</mat-radio-group>
+
+				<div *ngIf="checkout?.checkout?.customer" class="card-messages">
+					<ng-container *ngTemplateOutlet="cardMessagesTemplate"></ng-container>
+				</div>
+
+				<div class="actions">
+					<button class="return-button" mat-flat-button color="primary" (click)="this.cc.stepper.previous()">Edit Sender</button>
+					<button
+						class="continue-button"
+						mat-flat-button
+						color="primary"
+						(click)="proceedToDelivery()"
+						[class.disabled]="!checkout.misc.value.pickup_store || checkout.refreshingCheckout"
+						[matTooltip]="!checkout.misc.value.pickup_store ? 'Please select a store' : null"
+					>
+						<span *ngIf="!checkout.refreshingCheckout">Pickup Date</span>
+						<mat-spinner diameter="20" strokeWidth="2" *ngIf="checkout.refreshingCheckout"></mat-spinner>
+					</button>
+				</div>
+				<div class="error-notice" *ngIf="!checkout.misc.value.pickup_store">Please select a store.</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<ng-template #cardMessagesTemplate>
+	<div class="items-container" [ngClass]="{ 'multi-address': checkout.isMultiAddress, 'single-address': !checkout.isMultiAddress }">
+		<div
+			class="item"
+			*ngFor="let lineItemForm of checkout.forms.lineItems; let i = index"
+			[formGroup]="checkout.cardMessagesForm"
+			[class.u-hidden]="lineItemForm.buildProducts && !lineItemForm.details.name.toLowerCase().includes(' box')"
+		>
+			<h3>Card Message</h3>
+			<div class="item-row">
+				<div class="left">
+					<img
+						[src]="
+							lineItemForm.details.imageUrl
+								? lineItemForm.details.imageUrl
+								: lineItemForm.details.type?.includes('giftCertificate')
+								? 'https://cdn11.bigcommerce.com/s-guasxd1cdp/stencil/7d97b060-fc44-013b-94a1-0a916f4169f9/e/3cc0f790-fe4d-013b-452c-62dfd34fb321/img/GiftCertificate.png'
+								: 'https://eckerd.org/wp-content/uploads/2022/01/image-coming-soon.jpg'
+						"
+						[alt]="lineItemForm.details.name"
+					/>
+					<div class="item-name" *ngIf="!lineItemForm.buildProducts">{{ lineItemForm.details.name }}</div>
+					<div class="item-name" *ngIf="lineItemForm.buildProducts">Custom Gift Box</div>
+				</div>
+				<div class="right">
+					<div class="details">
+						<div class="item-options">
+							<div class="left">
+								<h5>Delivery Info</h5>
+								<p class="upper-label">To</p>
+								<mat-form-field appearance="outline" class="checkout-input">
+									<mat-label>Recipient's First and Last Name</mat-label>
+									<input matInput type="text" [formControlName]="'to' + i" />
+								</mat-form-field>
+
+								<p class="upper-label">From</p>
+								<mat-form-field appearance="outline" class="checkout-input">
+									<mat-label>Sender's First and Last Name</mat-label>
+									<input matInput type="text" [formControlName]="'from' + i" />
+								</mat-form-field>
+							</div>
+							<div class="right">
+								<h5>Card Message</h5>
+								<mat-form-field appearance="outline" class="checkout-input textarea">
+									<mat-label>Write your card message here</mat-label>
+									<textarea matInput [formControlName]="'message' + i" maxlength="275" (keyup)="onMessageKeyup($event, i)"></textarea>
+									<mat-hint align="end" class="message-hint"> {{ getMessageCharacterCount(i) }}/275 characters remaining </mat-hint>
+								</mat-form-field>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="item-address" *ngIf="checkout.isMultiAddress">
+				<div class="delivery-header" *ngIf="checkout.isDelivery()">
+					<h3>Delivery Address</h3>
+				</div>
+				<checkout-address
+					#checkoutAddress
+					type="shipping"
+					*ngIf="checkout.isDelivery() && checkout.hasConsignments() && checkout.checkout?.consignments[0]?.address?.firstName != 'Baskits'"
+					(addressUpdate)="handleAddressUpdate($event, i)"
+					[lineItemForm]="lineItemForm"
+				></checkout-address>
+				<!-- [address]="checkout.isDelivery() && checkout.hasConsignments() && checkout.checkout?.consignments[0]?.address" -->
+
+				<checkout-address
+					class="guest"
+					type="shipping"
+					*ngIf="(checkout.isDelivery() && !checkout.hasConsignments()) || (checkout.hasConsignments() && checkout.checkout?.consignments[0]?.address?.firstName == 'Baskits')"
+					(addressUpdate)="handleAddressUpdate($event, i)"
+					[lineItemForm]="lineItemForm"
+				></checkout-address>
+
+				<div class="alcohol-notice" *ngIf="lineItemForm.alcoholNotice">Sorry, we can only ship alcohol within Ontario. Please provide a local delivery address.</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="global-address" *ngIf="checkout.isDelivery() && !checkout.isMultiAddress" [ngClass]="{ 'address-select': checkout.hasAddressBook() }">
+		<div class="delivery-header" *ngIf="checkout.isDelivery()">
+			<h3>Delivery Address</h3>
+		</div>
+		<checkout-address
+			#checkoutAddress
+			type="shipping"
+			*ngIf="checkout.hasConsignments() && checkout.globalItemForm"
+			(addressUpdate)="handleAddressUpdate($event, 0)"
+			[lineItemForm]="checkout.globalItemForm"
+		></checkout-address>
+		<!-- [address]="checkout.isDelivery() && checkout.checkout?.consignments[0].shippingAddress" -->
+		<checkout-address class="guest" type="shipping" *ngIf="checkout.isDelivery() && !checkout.hasConsignments()" (addressUpdate)="handleAddressUpdate($event, 0)"></checkout-address>
+		<div class="alcohol-notice" *ngIf="checkout.globalItemForm.alcoholNotice">Sorry, we can only ship alcohol within Ontario. Please provide a local delivery address.</div>
+	</div>
+</ng-template>

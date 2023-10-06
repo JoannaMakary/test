@@ -1,0 +1,132 @@
+@import '../../../app.component.scss';
+
+#customer-step {
+	max-width: 500px;
+	margin: 0 auto;
+	padding-top: 50px;
+	@media (min-width: $desktop) {
+		position: absolute;
+		width: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		top: 23%;
+	}
+	::ng-deep {
+		mat-form-field {
+			display: block;
+		}
+
+		.mat-flat-button {
+			width: 100%;
+			// text-transform: uppercase;
+			font-size: 16px;
+			height: 50px;
+			line-height: 50px;
+			padding: 0 25px;
+			text-transform: uppercase;
+			font-weight: 600;
+		}
+
+		.sign-in-button,
+		.guest-button,
+		.cancel-button {
+			margin: 5px 0;
+			&:hover {
+				background-color: $baskitsBlue;
+				border-color: $baskitsBlue;
+				color: $white;
+			}
+		}
+
+		.cancel-button {
+			background-color: transparent;
+			color: black;
+		}
+
+		.password-container {
+			font-family: 'Heebo';
+			margin: 20px auto 0;
+			text-align: center;
+			// display: flex;
+			// place-content: space-between;
+			a {
+				font-size: 14px;
+			}
+		}
+
+		mat-checkbox {
+			margin: 10px 0 10px;
+			padding: 0 5px;
+			.mat-checkbox-frame {
+				border: 1px solid $black;
+			}
+			.mat-checkbox-label {
+				font-family: 'Heebo';
+				color: $black;
+				font-size: 15px;
+			}
+		}
+
+		.guest {
+			font-family: 'Heebo';
+
+			.already {
+				width: fit-content;
+				margin: 20px auto 0;
+				cursor: pointer;
+				span {
+					color: $baskitsBlue;
+					font-weight: 500;
+				}
+			}
+		}
+
+		.customer {
+			.actions {
+				display: flex;
+				gap: 15px;
+				.cancel-button {
+					order: 0;
+				}
+				.sign-in-button {
+					order: 1;
+				}
+			}
+		}
+
+		.checkout-input {
+			margin: 0;
+			&.mat-form-field-invalid.ng-touched {
+				margin-bottom: 1.5rem !important;
+			}
+
+			& + .checkout-input {
+				margin-top: 0.8rem;
+				&.mat-form-field-invalid.ng-touched {
+					margin-top: 0.5rem !important;
+				}
+			}
+		}
+	}
+
+	.error-alert {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		color: #721c24;
+		background-color: #f8d7da;
+		border-color: #f5c6cb;
+		position: relative;
+		padding: 0.75rem 1.25rem;
+		margin-bottom: 1rem;
+		border: 1px solid transparent;
+		border-radius: 0.25rem;
+		font: normal normal normal 14px/20px 'Heebo';
+		.mat-icon {
+			font-size: 22px;
+		}
+		div {
+			width: 100%;
+		}
+	}
+}

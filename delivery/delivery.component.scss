@@ -1,0 +1,582 @@
+@import '../../../app.component.scss';
+
+#delivery-step {
+	padding-top: 30px;
+
+	.step-heading {
+		margin-bottom: 10px;
+	}
+
+	.info {
+		font-family: 'Heebo';
+	}
+
+	.calendar-notice {
+		margin-top: 2rem;
+		background-color: #fff9ea;
+		border: 1px solid #ffc12e;
+		display: flex;
+		padding: 10px;
+		font-size: 13px;
+		gap: 10px;
+		font-family: 'Heebo';
+		@media (min-width: $desktop) {
+			font-size: 15px;
+			padding: 15px;
+			gap: 15px;
+		}
+		.mat-icon {
+			width: 26px;
+			color: #ffc12e;
+		}
+		div {
+			width: 100%;
+		}
+		p {
+			margin: 0;
+		}
+	}
+
+	.consignments {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		margin: 0 0 15px;
+		.consignment-container {
+			padding: 15px 0;
+			&:first-of-type {
+				padding-top: 0;
+			}
+			&:not(:first-of-type) {
+				border-top: 1px solid $offWhite;
+			}
+		}
+	}
+
+	.consignment {
+		.group {
+			display: flex;
+			gap: 40px;
+			width: 100% !important;
+			flex-direction: column;
+			@media (min-width: $lg) {
+				flex-direction: row;
+			}
+		}
+		.left {
+			width: 100%;
+			@media (min-width: $lg) {
+				width: 70%;
+			}
+		}
+		.right {
+			width: 100%;
+			display: flex;
+			gap: 25px;
+			flex-direction: column;
+			@media (min-width: $lg) {
+				width: 30%;
+			}
+		}
+		.shipping-address {
+			font-family: 'Heebo';
+			.heading {
+				margin: 0 0 5px;
+				font-weight: 500;
+				font-size: 18px;
+				padding: 11px 15px;
+				background-color: $offWhite;
+				color: $black;
+			}
+			p {
+				padding: 0 5px;
+				margin: 0;
+				line-height: 24px;
+				font-size: 15px;
+				line-height: 25px;
+			}
+		}
+		.items {
+			padding: 0 5px;
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			.item {
+				display: flex;
+				gap: 15px;
+				.img {
+					width: 35%;
+					max-width: 120px;
+					max-height: 120px;
+					@media (min-width: $desktop) {
+						max-width: 100px;
+						max-height: 100px;
+					}
+					img {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+					}
+				}
+				.details {
+					width: 65%;
+					font-family: 'Heebo';
+					.name {
+						font-style: italic;
+						font-size: 15px;
+						margin: 0 0 5px;
+					}
+					p {
+						margin: 0;
+						font-size: 13px;
+					}
+				}
+			}
+		}
+		.calendar {
+			p-calendar {
+				width: 100%;
+
+				::ng-deep {
+					.p-calendar {
+						width: 100%;
+
+						.p-state-disabled {
+							opacity: 0.2 !important;
+						}
+
+						.p-datepicker {
+							border-radius: 0;
+							border: none;
+							padding: 0;
+
+							.p-datepicker-header {
+								background-color: $black;
+								border-bottom: 1px solid $black;
+								border-radius: 0;
+
+								.p-datepicker-title {
+									font-size: 17px;
+									font-weight: 600;
+
+									button {
+										color: $white;
+										margin: 0;
+										pointer-events: none;
+										font-weight: 500;
+										font-family: 'Heebo';
+										font-size: 20px;
+										padding: 0 3px;
+									}
+								}
+
+								.p-datepicker-prev-icon,
+								.p-datepicker-next-icon {
+									&::before {
+										color: $white;
+									}
+									&:focus {
+										// box-shadow: 0 0 0 0.2rem $baskitsBlue;
+										box-shadow: unset;
+									}
+									&:hover {
+										&::before {
+											color: $baskitsBlue;
+										}
+									}
+								}
+							}
+
+							table {
+								margin: 0;
+
+								th {
+									font-size: 16px;
+									border: none;
+									padding: 13px 5px;
+
+									@media (min-width: 330px) {
+										padding: 13px 10px;
+									}
+
+									@media (min-width: $tablet) {
+										padding: 13px 15px;
+									}
+								}
+
+								tr:first-of-type {
+									td:first-of-type {
+										.p-ripple {
+											border-top-left-radius: 10px;
+										}
+									}
+
+									td:last-of-type {
+										.p-ripple {
+											border-top-right-radius: 10px;
+										}
+									}
+								}
+
+								tr:last-of-type {
+									td:first-of-type {
+										.p-ripple {
+											border-bottom-left-radius: 10px;
+										}
+									}
+
+									td:last-of-type {
+										.p-ripple {
+											border-bottom-right-radius: 10px;
+										}
+									}
+
+									.p-ripple {
+										border-bottom: 1px solid $offWhite !important;
+									}
+								}
+
+								tr {
+									td:last-of-type {
+										.p-ripple {
+											border-right: 1px solid $offWhite !important;
+										}
+									}
+								}
+
+								td {
+									padding: 0;
+									width: calc(100% / 7);
+									border: none;
+									height: 65px !important;
+									@media (min-width: $tablet) {
+										height: 85px !important;
+									}
+									.p-ripple {
+										border: none;
+										& > div {
+											&:not(.next-day-highlight) {
+												width: 100%;
+												height: 100%;
+												border: 1px solid $offWhite;
+												border-bottom: none;
+												border-right: none;
+											}
+										}
+										&.p-highlight {
+											.ups-highlight {
+												border: none !important;
+											}
+										}
+										&:not(.ups-highlight) {
+											width: 100%;
+											height: 100%;
+											border-radius: 0;
+											justify-content: flex-end;
+											align-items: baseline;
+											border-bottom: none;
+											border-right: none;
+										}
+
+										.next-day-highlight {
+											background-image: linear-gradient(45deg, transparent 25%, #bee1ff 25%, #bee1ff 50%, transparent 50%, transparent 75%, #bee1ff 75%, #bee1ff);
+											background-size: 20px 20px;
+											color: $black;
+											height: 100%;
+											width: 100%;
+											&::after {
+												content: 'Arrive';
+												position: absolute;
+												bottom: 0;
+												left: 0;
+												font-size: 10px;
+												letter-spacing: 0.3px;
+												font-weight: 500;
+												background: $black !important;
+												color: $white !important;
+												width: 100%;
+												text-align: center;
+												text-transform: uppercase;
+												@media (min-width: $tablet) {
+													font-size: 13px;
+													padding: 0;
+													// text-transform: capitalize;
+												}
+											}
+
+											.calendar-price {
+												display: none;
+												// left: -50% !important;
+												// text-shadow: 0px 0px 5px rgba(255, 255, 255, 1);
+											}
+										}
+
+										.express-highlight:not(.next-day-highlight) {
+											&::after {
+												content: 'EXPRESS';
+												position: absolute;
+												bottom: 0;
+												left: 0;
+												font-size: 10px;
+												letter-spacing: 0.3px;
+												font-weight: 500;
+												background: $offWhite !important;
+												color: $black !important;
+												width: 100%;
+												text-align: center;
+												text-transform: uppercase;
+												@media (min-width: $tablet) {
+													font-size: 13px;
+													padding: 0;
+													// text-transform: capitalize;
+												}
+											}
+										}
+
+										span {
+											&:hover {
+												background-color: transparent;
+											}
+
+											&.day {
+												z-index: 10;
+												position: absolute;
+												padding: 1px 6px;
+												top: 1px;
+												right: 0;
+												@media (max-width: calc($tablet - 1px)) {
+													font-size: 13px;
+												}
+												@media (min-width: $tablet) {
+													padding: 2px 7px;
+												}
+											}
+
+											&.calendar-price {
+												padding: 0;
+												position: absolute;
+												top: 0;
+												left: 0;
+												width: 100%;
+												height: 100%;
+												text-align: center;
+												vertical-align: middle;
+												font-size: 11px;
+												padding-top: 25px;
+
+												@media (min-width: $tablet) {
+													padding-top: 30px;
+													font-size: 14px;
+												}
+											}
+										}
+
+										&.p-disabled {
+											color: #ccc;
+										}
+									}
+									.p-highlight {
+										background-color: $baskitsBlue !important;
+										&:hover {
+											background-color: $baskitsBlue;
+											border: none;
+										}
+										span {
+											background-color: $baskitsBlue !important;
+										}
+										&:focus {
+											box-shadow: unset !important;
+										}
+									}
+
+									&.p-datepicker-today span {
+										background-color: $offWhite;
+									}
+
+									.p-ripple:hover {
+										background-color: #dff0ff;
+										color: $black;
+										border: none !important;
+									}
+
+									&.p-datepicker-other-month {
+										color: #ccc;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&.pickup {
+				max-width: 730px;
+				padding-bottom: 10px !important;
+				p-calendar {
+					::ng-deep {
+						.p-calendar {
+							td {
+								height: 50px !important;
+								@media (min-width: $tablet) {
+									height: 65px !important;
+								}
+								.p-highlight {
+									&::after {
+										content: 'Pickup';
+										position: absolute;
+										bottom: 0;
+										left: 0;
+										font-size: 10px;
+										letter-spacing: 0.3px;
+										font-weight: 500;
+										background: $black !important;
+										color: $white !important;
+										width: 100%;
+										text-align: center;
+										text-transform: uppercase;
+										@media (min-width: $tablet) {
+											font-size: 14px;
+											padding: 1px 0;
+											// text-transform: capitalize;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			&.delivery {
+				p-calendar {
+					::ng-deep {
+						.p-calendar {
+							td {
+								.p-highlight {
+									&::after {
+										content: 'Arrive';
+										position: absolute;
+										bottom: 0;
+										left: 0;
+										font-size: 10px;
+										letter-spacing: 0.3px;
+										font-weight: 500;
+										background: $black !important;
+										color: $white !important;
+										width: 100%;
+										text-align: center;
+										text-transform: uppercase;
+										@media (min-width: $tablet) {
+											font-size: 13px;
+											padding: 0;
+											// text-transform: capitalize;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		.calendar-legend {
+			margin: 20px 0 0;
+			font-family: 'Heebo';
+			display: flex;
+			gap: 15px;
+			align-items: center;
+			place-content: center;
+			text-align: center;
+			font-size: 14px;
+			@media (min-width: $tablet) {
+				padding: 0 20px;
+			}
+			.legend-icon {
+				height: fit-content;
+				&.arrival {
+					background-color: $black;
+					color: $white;
+					padding: 2px 10px;
+					font-size: 15px;
+					font-weight: 500;
+					text-align: center;
+					@media (min-width: $tablet) {
+						font-size: 16px;
+					}
+				}
+			}
+			.legend-description {
+				line-height: 20px;
+				max-width: 360px;
+				font-size: 14px;
+				@media (min-width: $tablet) {
+					font-size: 15px;
+				}
+			}
+		}
+	}
+
+	.actions {
+		display: flex;
+		place-content: space-between;
+		margin: 25px 0 0 0;
+		.continue-button,
+		.return-button {
+			font-size: 16px;
+			height: 50px;
+			line-height: 50px;
+			padding: 0 25px;
+
+			@media (max-width: calc($desktop - 1px)) {
+				padding: 0 15px;
+				font-size: 15px;
+			}
+		}
+
+		.return-button {
+			background-color: transparent;
+			color: $black;
+			&:hover {
+				background-color: $black;
+				color: $white;
+			}
+		}
+	}
+
+	&.delivery {
+		.info {
+			margin: 10px 0 25px;
+		}
+		.consignment {
+			margin: 10px 0;
+			.shipping-options {
+				margin: 0 0 20px;
+				.heading {
+					margin: 0 0 10px;
+					font-weight: 500;
+					font-size: 20px;
+				}
+				.mat-radio-button {
+					font-family: 'Heebo';
+					margin: 0;
+					padding: 8px 10px;
+					font-size: 15px;
+					&.mat-radio-checked {
+						background-color: $offWhite;
+					}
+
+					::ng-deep {
+						.mat-radio-label-content {
+							white-space: break-spaces;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.pickup {
+		.info {
+			margin: 2rem 0 1.5rem;
+		}
+	}
+}

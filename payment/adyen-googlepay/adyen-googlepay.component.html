@@ -1,0 +1,12 @@
+<div class="adyen-google-payment-container">
+	<div [id]="containerId"></div>
+
+	<div class="credit-card-box" *ngIf="googleSignedIn">
+		<div class="card-content">
+			<div style="padding-left: 30px; margin: 7px 0 15px">
+				<strong>{{ googlePaymentMethod?.initializationData?.card_information?.type }}:</strong> **** {{ googlePaymentMethod?.initializationData?.card_information?.number }}
+			</div>
+			<div style="padding-left: 30px; font-size: 15px"><a role="button" (click)="signOut()"> Sign Out of Google Pay</a> to view other payment methods</div>
+		</div>
+	</div>
+</div>

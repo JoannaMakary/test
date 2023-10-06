@@ -1,0 +1,39 @@
+<mat-accordion class="expansion-cart" *ngIf="mobile">
+	<mat-expansion-panel hideToggle [expanded]="mobile_toggled" (closed)="mobile_toggled = !mobile_toggled" (opened)="mobile_toggled = !mobile_toggled">
+		<mat-expansion-panel-header>
+			<mat-panel-title>{{ !mobile_toggled ? 'My Cart' : 'My Cart' }} ({{ checkout.items.length }} Items)</mat-panel-title>
+			<mat-panel-description
+				>{{ checkout.grandTotalValue | currency }}<mat-icon *ngIf="!mobile_toggled">expand_more</mat-icon><mat-icon *ngIf="mobile_toggled">expand_less</mat-icon></mat-panel-description
+			>
+		</mat-expansion-panel-header>
+		<checkout-cart *ngIf="checkout.checkout.id"></checkout-cart>
+	</mat-expansion-panel>
+</mat-accordion>
+
+<div id="baskits-checkout" [ngClass]="{ onlyGiftCertificatesInCart: checkout.onlyGiftCertificatesInCart }">
+	<div id="steps">
+		<mat-stepper linear labelPosition="bottom" #stepper (selectionChange)="handleStepChange($event)">
+			<mat-step *ngFor="let component of formComponents; let i = index" [stepControl]="getStepControl(component)">
+				<!-- [checked]="isStepCompleted(i)" -->
+				<ng-template matStepLabel>
+					<mat-icon class="checked" *ngIf="stepper.selectedIndex > getComponentIndex(component)">check</mat-icon>
+					{{ component.label }}
+				</ng-template>
+				<ng-container *ngIf="component.active">
+					<ng-container *ngComponentOutlet="component.component"></ng-container>
+				</ng-container>
+			</mat-step>
+		</mat-stepper>
+	</div>
+	<div id="persistent-cart" *ngIf="!mobile">
+		<checkout-cart></checkout-cart>
+	</div>
+</div>
+
+<div class="loading-container cc-loader" *ngIf="checkout.paymentLoading">
+	<payment-loader></payment-loader>
+</div>
+
+<div class="shipping-loading-container container" *ngIf="checkout.shippingLoading">
+	<shipping-loader></shipping-loader>
+</div>

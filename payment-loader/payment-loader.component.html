@@ -1,0 +1,164 @@
+<div id="paymentProcessingAnimation" [ngClass]="{ done: checkout.paymentSuccess }" class="paymentProcessing">
+	<div class="flip-container">
+		<div class="checkCircle">
+			<svg height="250" width="250">
+				<circle class="circle" cx="125" cy="125" r="115" stroke="#66bc46" stroke-width="10" fill-opacity="0" />
+			</svg>
+		</div>
+		<div class="scanline"></div>
+		<div class="scanOverlay">
+			<table cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="flipper creditcard">
+			<div class="front">
+				<svg
+					version="1.1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+					x="0px"
+					y="0px"
+					width="160px"
+					height="109.9px"
+					viewBox="0 0 160 109.9"
+					style="enable-background: new 0 0 160 109.9"
+					xml:space="preserve"
+				>
+					<style type="text/css">
+						.grey {
+							fill: #b3b3b3;
+						}
+						.gold {
+							fill: #fbb03b;
+						}
+						.st2 {
+							opacity: 0.66;
+							fill: #e6e6e6;
+						}
+						.st3 {
+							fill: #4d4d4d;
+						}
+					</style>
+					<defs></defs>
+					<g>
+						<path
+							class="grey"
+							d="M153,109.9H7c-3.9,0-7-3.1-7-7L0,7c0-3.9,3.1-7,7-7l146,0c3.9,0,7,3.1,7,7v95.9
+                C160,106.8,156.9,109.9,153,109.9z"
+						/>
+						<path
+							class="gold"
+							d="M34.7,44.8H19.9c-2.9,0-5.2-2.3-5.2-5.2v-7.5c0-2.9,2.3-5.2,5.2-5.2h14.8c2.9,0,5.2,2.3,5.2,5.2v7.5
+                C39.9,42.5,37.6,44.8,34.7,44.8z"
+						/>
+						<rect x="14.9" y="57.8" class="st2" width="26.6" height="11.2" />
+						<rect x="49.7" y="57.8" class="st2" width="26.6" height="11.2" />
+						<rect x="84.6" y="57.8" class="st2" width="26.6" height="11.2" />
+						<rect x="119.5" y="57.8" class="st2" width="26.6" height="11.2" />
+						<rect x="14.9" y="83.3" class="st2" width="77.7" height="11.9" />
+						<g id="Amex_1_">
+							<g>
+								<path
+									class="st3"
+									d="M144.4,11.7h-29.6c-1.2,0-2.1,1-2.1,2.1v18c0,1.2,1,2.1,2.1,2.1h29.6c1.2,0,2.1-1,2.1-2.1v-18
+                        C146.5,12.7,145.5,11.7,144.4,11.7z"
+								/>
+							</g>
+						</g>
+					</g>
+				</svg>
+			</div>
+			<div class="back">
+				<svg
+					version="1.1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+					x="0px"
+					y="0px"
+					width="160px"
+					height="110px"
+					viewBox="0 0 160 110"
+					style="enable-background: new 0 0 160 110"
+					xml:space="preserve"
+				>
+					<style type="text/css">
+						.grey {
+							fill: #b3b3b3;
+						}
+						.st1 {
+							opacity: 0.66;
+						}
+					</style>
+					<defs></defs>
+					<g>
+						<path class="grey" d="M153,110H7c-3.9,0-7-3.1-7-7L0,7c0-3.9,3.1-7,7-7l146,0c3.9,0,7,3.1,7,7v96C160,106.9,156.9,110,153,110z" />
+						<rect x="0" y="20" class="st1" width="160" height="23" />
+					</g>
+				</svg>
+			</div>
+		</div>
+	</div>
+	<div class="paymentProcessing-text">Please wait while we process your payment...</div>
+</div>

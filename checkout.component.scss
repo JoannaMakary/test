@@ -1,0 +1,248 @@
+@import '../../app.component.scss';
+
+#baskits-checkout {
+	display: flex;
+	gap: 25px;
+	margin-bottom: 2rem;
+
+	@media (max-width: calc($desktop - 1px)) {
+		padding: 10px;
+		flex-direction: column;
+	}
+
+	#steps {
+		width: 100%;
+
+		@media (min-width: $desktop) {
+			width: 70%;
+		}
+
+		@media (min-width: $xl) {
+			// width: 75%;
+		}
+	}
+
+	#persistent-cart {
+		width: 100%;
+
+		@media (min-width: $desktop) {
+			width: 30%;
+		}
+
+		@media (min-width: $xl) {
+			// width: 25%;
+		}
+	}
+
+	::ng-deep {
+		.checkout-step {
+			.primary-button {
+				transition: 0.2s all ease;
+				border: 1px solid $black;
+				&:hover {
+					background-color: transparent;
+					border-color: $black;
+					color: $black;
+				}
+			}
+		}
+	}
+
+	&.onlyGiftCertificatesInCart {
+		::ng-deep {
+			#summary-step {
+				.summary {
+					.items {
+						.img-container,
+						.details {
+							width: 50% !important;
+						}
+
+						.img-container {
+							@media (min-width: $desktop) {
+								max-width: 215px !important;
+								img {
+									object-fit: contain;
+								}
+							}
+						}
+
+						.shipping,
+						.date,
+						.price {
+							display: none;
+						}
+
+						.mat-list-item-content {
+							gap: 30px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.loading-container {
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.4);
+	justify-content: center;
+	align-items: center;
+	z-index: 999;
+
+	::ng-deep {
+		.loading {
+			position: relative;
+			width: 100px;
+			height: 100px;
+
+			mat-spinner {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100px;
+				height: 100px;
+
+				circle {
+					stroke: $white;
+				}
+			}
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			.loading-text {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				height: 100%;
+
+				span {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					color: $white;
+					text-transform: uppercase;
+				}
+			}
+		}
+	}
+
+	&.cc-loader {
+		background-color: rgba(255, 255, 255, 0.85);
+	}
+}
+
+.expansion-cart {
+	display: flex;
+	width: 100%;
+	bottom: 0px;
+	z-index: 999;
+	margin: 0;
+	padding: 0;
+	left: 0;
+	box-shadow: none;
+	border: none;
+	background-color: $white;
+	border-radius: 0;
+	z-index: 99999;
+	position: sticky;
+	top: 55px;
+	left: 0;
+	@media (min-width: $tablet) {
+		top: 56px;
+	}
+
+	::ng-deep {
+		mat-expansion-panel {
+			width: 100%;
+			box-shadow: none;
+			border-radius: 0 !important;
+			&.mat-expanded {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				z-index: 9999;
+				box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+				height: 100% !important;
+			}
+		}
+
+		.your-cart {
+			display: none !important;
+		}
+
+		.mat-expansion-panel-body {
+			@media only screen and (max-width: calc($desktop - 1px)) {
+				padding: 0rem 1rem 0;
+				overflow-y: hidden;
+			}
+		}
+
+		mat-expansion-panel-header {
+			background-color: #f0d3c7 !important;
+			border-radius: 0;
+			padding: 0 15px;
+			height: 45px;
+
+			mat-panel-title {
+				margin: 0;
+				color: $black;
+				font: normal normal 600 16px/18px 'Heebo';
+
+				@media (min-width: 385px) {
+					font: normal normal 600 18px/20px 'Heebo';
+				}
+			}
+		}
+
+		.mat-content {
+			margin: 0;
+			flex: none;
+			width: 100%;
+			gap: 15px;
+			@media (min-width: 385px) {
+				gap: 30px;
+			}
+			mat-panel-description {
+				display: block;
+				text-align: right;
+				color: $black;
+				margin: 0;
+				font: normal normal bold 16px/22px 'Heebo';
+
+				@media (min-width: 385px) {
+					font: normal normal bold 18px/18px 'Heebo';
+				}
+				.mat-icon {
+					color: $black;
+					vertical-align: sub;
+					height: 20px;
+
+					@media (min-width: 385px) {
+						height: 24px;
+					}
+				}
+			}
+			mat-panel-title,
+			mat-panel-description {
+				width: 50%;
+				flex-grow: unset;
+				flex-basis: unset;
+			}
+		}
+
+		.mat-expansion-panel-content {
+			// overflow: scroll;
+			// max-height: 75vh;
+		}
+	}
+}
